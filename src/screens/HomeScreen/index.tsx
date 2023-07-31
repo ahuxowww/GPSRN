@@ -1,15 +1,16 @@
+import React from 'react';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
 import {Colors, Images, Metrics} from '../../assets';
 import {View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
-import Svgs from '../../assets/svg';
 
 const HomeScreen = () => {
   const mockData = {
-    avatar: '',
-    name: 'Mai Nhat',
+    avatar:
+      'https://cdn.popsww.com/blog/sites/2/2022/02/demon-slayer-nezuko.jpg',
+    name: 'Kimm moo chee',
     times: 12,
     total: 3.2,
   };
@@ -20,27 +21,34 @@ const HomeScreen = () => {
       backgroundColor={Colors.blueDarkTurquoise}
       barStyle="light-content"
       backgroundBody={Colors.yellowHalfDutchWhite}>
-      <MainTitle marginH-24 title="Me" />
+      <MainTitle marginH-24 title="Giới thiệu" />
       <ScrollView>
         <View row centerV marginT-24 marginH-24>
           <Image
-            source={mockData.avatar ? mockData.avatar : Images.logo.avatar}
+            source={
+              mockData.avatar ? {uri: mockData.avatar} : Images.logo.avatar
+            }
             style={styles.avatar}
           />
-          <Text marginL-32 h_page_title>
+          <Text marginL-24 h_page_title>
             {mockData?.name}
           </Text>
         </View>
-        <View row marginT-16>
-          <View marginL-16 style={styles.subContent}>
+        <View marginH-24 marginT-12>
+          <Text h_highlight>Hôm nay</Text>
+        </View>
+        <View row marginT-12>
+          <View marginL-24 style={styles.subContent}>
             <Text body_bold>{mockData.total}</Text>
-            <Text body_regular>Total (km) {mockData?.total ? '🤗' : '😴'}</Text>
+            <Text body_regular>
+              Quãng đường (km) {mockData?.total ? '🤗' : '😴'}
+            </Text>
           </View>
-          <View marginL-16 style={styles.subContent}>
+          <View marginH-12 style={styles.subContent}>
             <Text body_bold>{mockData?.times}</Text>
-            <Text body_regular>Higher speed</Text>
+            <Text body_regular>Số lần vượt quá tốc độ</Text>
           </View>
-          <View marginL-16 style={styles.subContent}>
+          <View marginH-12 style={styles.subContent}>
             <Text body_bold>0</Text>
             <Text body_regular>To do</Text>
           </View>

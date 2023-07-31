@@ -1,7 +1,6 @@
-const ClockIcon = require('./svg/clock.svg').default;
+export {default as Clock} from './svg/clock.svg';
 
-const Svgs = {
-  Clock: ClockIcon,
+import Menu from './svg/clock.svg';
+export const Icon = {
+  Menu,
 };
-
-export default Svgs;
