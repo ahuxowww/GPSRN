@@ -1,8 +1,8 @@
 import React, {useCallback, FC} from 'react';
-import {View} from 'react-native-ui-lib';
-import {StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
+import {StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Colors, Images, Metrics} from '../../assets';
+import {Colors, Images, Metrics, Svgs} from '../../assets';
 import Text from './common/Text';
 interface Props {
   customStyle?: any;
@@ -24,8 +24,8 @@ const MainTitle: FC<Props> = ({title, fontSize, isOneLine, ...customStyle}) => {
       <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
         {title}
       </Text>
-      <TouchableOpacity onPress={onNavSetting}>
-        <Image source={Images.logo.menu} style={styles.icon} />
+      <TouchableOpacity marginR-16 onPress={onNavSetting}>
+        <Svgs.Menu height={28} width={28} fill={Colors.white} />
       </TouchableOpacity>
     </View>
   );

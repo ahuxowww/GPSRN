@@ -3,10 +3,11 @@ import {Image, ScrollView, StyleSheet} from 'react-native';
 import Container from '../component/Container';
 import {GGMap} from './component/GGMap';
 import {Marker} from './component/Marker';
-import {Colors, Images} from '../../assets';
-import {Text, TouchableOpacity, View} from 'react-native-ui-lib';
+import {Colors, Images, Metrics, Svgs} from '../../assets';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MainTitle from '../component/MainTitle';
-import {BottomDialog} from '../component/common/BottomDialog';
+import Carousel from 'react-native-snap-carousel';
+import Text from '../component/common/Text';
 
 const Map = () => {
   const status = [
@@ -53,12 +54,61 @@ const Map = () => {
   }, []);
   const actionMotor = 1;
 
+  const mockData = [
+    {title: 'Tốc độ', value: '37.2', type: 'km/h'},
+    {title: 'Quãng đường đi đến xe của bạn', value: '32', type: 'km'},
+    {title: 'Thời gian', value: '30', type: 'giờ'},
+    {title: 'Tình trạng', value: 'An Toàn', type: '', color: 'green'},
+  ];
+
   const onOpenBottomDetail = useCallback(() => {
     setBottomMapDialog(true);
   }, []);
   const onCloseBottomDetail = useCallback(() => {
     setBottomMapDialog(false);
   }, []);
+  const ITEM_LENGTH = Metrics.screen.width - 60;
+
+  const getItemLayout = React.useCallback(
+    (_data: any, index: number) => ({
+      length: ITEM_LENGTH,
+      offset: ITEM_LENGTH * index,
+      index,
+    }),
+    [ITEM_LENGTH],
+  );
+
+  const renderItem = useCallback(
+    ({item, index}: {item: any; index: number}) => {
+      return (
+        <View style={styles.itemJourney}>
+          <View row style={{justifyContent: 'space-between'}}>
+            <Text h2 color={Colors.white}>
+              {item.title}
+            </Text>
+            <TouchableOpacity onPress={onCloseBottomDetail}>
+              <Svgs.Close width={24} height={24} fill={Colors.white} />
+            </TouchableOpacity>
+          </View>
+          <View center row marginT-12>
+            <Text
+              h1
+              color={
+                item?.color
+                  ? item?.color === 'green'
+                    ? Colors.greenSpringBud
+                    : Colors.redAlizarin
+                  : Colors.white
+              }>
+              {item?.value} {item?.type}
+            </Text>
+          </View>
+        </View>
+      );
+    },
+    [],
+  );
+
   return (
     <Container
       safeBottom
@@ -67,16 +117,32 @@ const Map = () => {
       <MainTitle marginH-24 title="Vị trí" />
       <ScrollView style={{flex: 1}}>
         {renderMap()}
-        <TouchableOpacity onPress={onOpenBottomDetail} style={styles.position}>
-          <Image source={Images.logo.arrow_top} style={styles.image} />
-        </TouchableOpacity>
+        {bottomMapDialog && (
+          <View style={styles.position}>
+            <Carousel
+              disableIntervalMomentum
+              // ref={refCarousel}
+              data={mockData}
+              itemWidth={Metrics.screen.width - 60}
+              renderItem={renderItem}
+              sliderWidth={Metrics.screen.width}
+              slideStyle={{height: 200, justifyContent: 'flex-end'}}
+              getItemLayout={getItemLayout}
+              initialNumToRender={5}
+              windowSize={5} // lazyload only render prev and next item ( should equal to initialNumToRender )
+              containerCustomStyle={{flexGrow: 0}}
+              style={styles.position}
+            />
+          </View>
+        )}
+        {!bottomMapDialog && (
+          <TouchableOpacity
+            onPress={onOpenBottomDetail}
+            style={[styles.position, {left: 16}]}>
+            <Image source={Images.logo.arrow_top} style={styles.image} />
+          </TouchableOpacity>
+        )}
       </ScrollView>
-      <BottomDialog
-        customTitle="Chi tiết bản đồ"
-        isVisible={bottomMapDialog}
-        onCloseModal={onCloseBottomDetail}>
-        <View padding-16 height={100}></View>
-      </BottomDialog>
     </Container>
   );
 };
@@ -94,11 +160,16 @@ const styles = StyleSheet.create({
   position: {
     position: 'absolute',
     bottom: 20,
-    left: 16,
   },
   image: {
     height: 48,
     width: 48,
     borderRadius: 24,
+  },
+  itemJourney: {
+    height: Metrics.screen.height / 4,
+    backgroundColor: Colors.blueDarkTurquoise,
+    borderRadius: 16,
+    padding: 16,
   },
 });
