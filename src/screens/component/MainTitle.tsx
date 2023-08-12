@@ -9,9 +9,16 @@ interface Props {
   title?: string | null;
   fontSize?: number;
   isOneLine?: boolean;
+  isgoBack?: boolean;
 }
 
-const MainTitle: FC<Props> = ({title, fontSize, isOneLine, ...customStyle}) => {
+const MainTitle: FC<Props> = ({
+  title,
+  fontSize,
+  isOneLine,
+  isgoBack,
+  ...customStyle
+}) => {
   const customFontSize = fontSize ? {fontSize} : styles.title;
   const navigation = useNavigation();
 
@@ -19,14 +26,27 @@ const MainTitle: FC<Props> = ({title, fontSize, isOneLine, ...customStyle}) => {
     navigation.navigate('SETTING_SCREEN');
   }, [navigation]);
 
+  const onGoback = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   return (
     <View row style={styles.header}>
-      <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
-        {title}
-      </Text>
-      <TouchableOpacity marginR-16 onPress={onNavSetting}>
-        <Svgs.Menu height={28} width={28} fill={Colors.white} />
-      </TouchableOpacity>
+      {isgoBack && (
+        <TouchableOpacity left marginR-16 onPress={onGoback}>
+          <Svgs.Back height={28} width={28} fill={Colors.white} />
+        </TouchableOpacity>
+      )}
+      <View center flex marginR-28={isgoBack} >
+        <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
+          {title}
+        </Text>
+      </View>
+      {!isgoBack && (
+        <TouchableOpacity right marginR-16 onPress={onNavSetting}>
+          <Svgs.Menu height={28} width={28} fill={Colors.white} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -42,7 +62,6 @@ const styles = StyleSheet.create({
     width: Metrics.screen.width,
     backgroundColor: Colors.blueDarkTurquoise,
     alignItems: 'center',
-    justifyContent: 'space-between',
     shadowColor: Colors.black,
     shadowOpacity: 0.3,
     shadowRadius: 12,

@@ -83,14 +83,14 @@ export function TabBar(props: TabBarProps) {
                     center
                     style={
                       indexSelected === index
-                        ? {backgroundColor: Colors.blueMalibu, height: 32}
+                        ? {backgroundColor: Colors.blueDark, height: 48}
                         : {
                             backgroundColor: Colors.blueDarkTurquoise,
-                            height: 32,
+                            height: 48,
                           }
                     }
                     onPress={() => onChangeIndex(index)}>
-                    <Text caption_regular color={Colors.white}>
+                    <Text body_regular color={Colors.white}>
                       {label}
                     </Text>
                   </TouchableOpacity>

@@ -11,9 +11,9 @@ interface TagProps {
   onPress?: () => void;
 }
 
-const Tag: FC<TagProps> = props => {
+const Tag: FC<TagProps> = ({title, subTitle, type, onPress}) => {
   const renderIcon = () => {
-    switch (props?.type) {
+    switch (type) {
       case 'car':
         return <Svgs.Car width={24} height={24} />;
       case 'bike':
@@ -32,13 +32,13 @@ const Tag: FC<TagProps> = props => {
       {renderIcon()}
       <View flex marginL-16>
         <Text body_regular color={Colors.greyNightRider}>
-          {props?.title}
+          {title}
         </Text>
         <Text body_regular color={Colors.greyNightRider57}>
-          {props?.subTitle}
+          {subTitle}
         </Text>
       </View>
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity onPress={onPress}>
         <Svgs.Right width={24} height={24} />
       </TouchableOpacity>
     </View>

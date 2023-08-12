@@ -63,8 +63,7 @@ const MyPageScreen = () => {
                 onPress={onNavtoMapScreen}
               />
             ))
-          : null}
-        {tabIndex === 1
+          : tabIndex === 1
           ? activeVehicle.map((item: any) => (
               <TagItem
                 title={item.label}
@@ -73,8 +72,7 @@ const MyPageScreen = () => {
                 onPress={onNavtoMapScreen}
               />
             ))
-          : null}
-        {tabIndex === 2
+          : tabIndex === 2
           ? offlineVehicle.map((item: any) => (
               <TagItem
                 title={item.label}

@@ -7,6 +7,7 @@ export {default as Bike} from './svg/bike.svg';
 export {default as Motor} from './svg/motor.svg';
 export {default as Right} from './svg/right.svg';
 export {default as Left} from './svg/left.svg';
+export {default as Back} from './svg/back.svg';
 
 import Menu from './svg/clock.svg';
 export const Icon = {
