@@ -37,7 +37,7 @@ const MainTitle: FC<Props> = ({
           <Svgs.Back height={28} width={28} fill={Colors.white} />
         </TouchableOpacity>
       )}
-      <View center flex marginR-28={isgoBack} >
+      <View center flex marginR-28={isgoBack} marginL-28={!isgoBack} >
         <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
           {title}
         </Text>
