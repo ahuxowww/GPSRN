@@ -48,7 +48,7 @@ const reducerMap = {
 /* ------------- Selectors ------------- */
 const getReducerState = (state: any): AppState => state[stateKey];
 const selectors = {
-  getIsLoading: ({user}: AppState) => user,
+  getUserData: ({user}: AppState) => user,
 };
 
 /* ------------- Export ------------- */

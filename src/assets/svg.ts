@@ -12,6 +12,7 @@ export {default as ArrowRight} from './svg/arrow_right.svg';
 export {default as Edit} from './svg/edit.svg';
 export {default as Eye} from './svg/grey_eye.svg';
 export {default as HideEye} from './svg/hide_eye.svg';
+export {default as Logo} from './svg/logo.svg';
 
 import Menu from './svg/clock.svg';
 export const Icon = {

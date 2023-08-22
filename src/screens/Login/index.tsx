@@ -1,6 +1,6 @@
 import {Colors, Metrics, Svgs} from '@src/assets';
 import React, {useCallback, useState} from 'react';
-import {LayoutChangeEvent, Platform, StyleSheet} from 'react-native';
+import {LayoutChangeEvent, StyleSheet} from 'react-native';
 import {Text, TouchableOpacity, View} from 'react-native-ui-lib';
 import * as Yup from 'yup';
 import {useDispatch} from 'react-redux';
@@ -13,6 +13,8 @@ import Container from '../component/Container';
 import {CheckBox} from '../component/common/CheckBox';
 import {Button} from '../component/common/Button';
 import {TextInput} from '../component/common/TextInput';
+import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
+import {useUserLogin} from '@src/hooks/user';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -28,7 +30,6 @@ const Login = () => {
   const [height, setHeight] = useState(0);
   const [showPassword, setShowPassword] = useState(true);
   const [agreement, setAgreement] = useState<boolean>(false);
-
   const {
     control,
     formState: {errors},
@@ -62,7 +63,7 @@ const Login = () => {
       console.log('Login screen >>>>>', data);
       dispatch(
         UserThunk.postLogin({
-          code: user,
+          username: user,
           password: password,
         }),
       );
@@ -71,67 +72,80 @@ const Login = () => {
   );
 
   return (
-    <Container>
-      <View marginH-24 style={styles.container} onLayout={onLayout}>
-        {Platform.OS === 'android' ? <View height={40} /> : null}
-        <View centerH>
-          <Controller
-            name="user"
-            control={control}
-            render={({field: {onChange, value}}) => (
-              <TextInput
-                useTextField
-                label={'Tên đăng nhập'}
-                value={value}
-                onChangeText={onChange}
-                style={styles.texFiledContainer}
-                placeholder={'Nhập tên đăng nhập'}
-                colorIcon={Colors.brownKabul50}
-                onPressIcon={() => {}}
-                isError={!!errors?.user?.message}
-                messageError={errors?.user?.message}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            render={({field: {onChange, value}}) => (
-              <TextInput
-                useTextField
-                label={'Mật khẩu'}
-                value={value}
-                onChangeText={onChange}
-                style={styles.texFiledContainer}
-                placeholder={'Nhập mật khẩu'}
-                colorIcon={Colors.brownKabul50}
-                iconRight={showPassword ? Svgs.HideEye : Svgs.Eye}
-                onPressIcon={onHidePassword}
-                secureTextEntry={showPassword}
-                isError={!!errors?.password?.message}
-                messageError={errors?.password?.message}
-              />
-            )}
-          />
+    <Container
+      safeBottom
+      backgroundColor={Colors.blueDarkTurquoise}
+      barStyle="dark-content"
+      backgroundBody={Colors.blueDarkTurquoise}>
+      <KeyboardAvoidingView>
+        <View marginH-24 style={styles.container} onLayout={onLayout}>
+          <View center marginV-20>
+            <Svgs.Logo />
+          </View>
+          <View centerH>
+            <Controller
+              name="user"
+              control={control}
+              render={({field: {onChange, value}}) => (
+                <TextInput
+                  useTextField
+                  label={'Tên đăng nhập'}
+                  value={value}
+                  onChangeText={onChange}
+                  style={styles.texFiledContainer}
+                  placeholder={'Nhập tên đăng nhập'}
+                  colorIcon={Colors.brownKabul50}
+                  onPressIcon={() => {}}
+                  isError={!!errors?.user?.message}
+                  messageError={errors?.user?.message}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({field: {onChange, value}}) => (
+                <TextInput
+                  useTextField
+                  label={'Mật khẩu'}
+                  value={value}
+                  onChangeText={onChange}
+                  style={styles.texFiledContainer}
+                  placeholder={'Nhập mật khẩu'}
+                  colorIcon={Colors.brownKabul50}
+                  iconRight={showPassword ? Svgs.HideEye : Svgs.Eye}
+                  onPressIcon={onHidePassword}
+                  secureTextEntry={showPassword}
+                  isError={!!errors?.password?.message}
+                  messageError={errors?.password?.message}
+                />
+              )}
+            />
+          </View>
+          <View row spread centerV marginT-12>
+            <CheckBox
+              label="Lưu mật khẩu"
+              value={agreement}
+              onChange={onAgreement}
+            />
+            <TouchableOpacity onPress={() => {}}>
+              <Text color={Colors.blueMalibu}>{'Quên mật khẩu?'}</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            row
+            marginT-16
+            marginB-40
+            backgroundColor={Colors.blueNavy}
+            style={styles.button}>
+            <Button
+              disabled={false}
+              label={'Đăng nhập'}
+              onPress={handleSubmit(onSubmit)}
+            />
+          </View>
         </View>
-        <View row spread centerV marginT-12>
-          <CheckBox
-            label="Lưu mật khẩu"
-            value={agreement}
-            onChange={onAgreement}
-          />
-          <TouchableOpacity onPress={() => {}}>
-            <Text color={Colors.blueMalibu}>{'Quên mật khẩu?'}</Text>
-          </TouchableOpacity>
-        </View>
-        <View row marginT-16 marginB-40>
-          <Button
-            disabled={false}
-            label={'Đăng nhập'}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
-      </View>
+      </KeyboardAvoidingView>
     </Container>
   );
 };
@@ -143,12 +157,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 85,
+    marginTop: 50,
   },
   texFiledContainer: {
     textAlign: 'center',
     height: 56,
     paddingVertical: 8,
+    marginVertical: 8,
   },
   loginLogo: {
     height: 50,
@@ -159,6 +174,9 @@ const styles = StyleSheet.create({
     width: 44,
     borderRadius: 4,
     backgroundColor: Colors.redTomato,
+  },
+  button: {
+    borderRadius: 24,
   },
 });
 

@@ -7,10 +7,14 @@ import {TouchableOpacity, View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
 import {Switch} from '../component/common/Switch';
 import {useNavigation} from '@react-navigation/native';
+import {UserThunk} from '@src/redux/thunks';
+import {useDispatch} from 'react-redux';
+import {AppThunkDispatch} from '@src/redux/common';
 
 const MyPageScreen = () => {
   const [isSwitch, setSwitch] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch<AppThunkDispatch>();
 
   const onChangeSwitch = useCallback(() => {
     setSwitch(!isSwitch);
@@ -26,9 +30,11 @@ const MyPageScreen = () => {
 
   const onNavToProfile = useCallback(() => {
     navigation.navigate('CHANGE_PROFILE_SCREEN', {textName: mockData?.name});
-  }, []);
+  }, [mockData?.name, navigation]);
 
-  const onLogOut = useCallback(() => {}, []);
+  const onLogOut = useCallback(async () => {
+    dispatch(UserThunk.Logout());
+  }, [dispatch]);
 
   return (
     <Container
