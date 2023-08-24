@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import {View, TouchableOpacity} from 'react-native-ui-lib';
 import {ViewStyle} from 'react-native';
 import Text from './Text';
+import {Colors} from '@src/assets';
 interface ButtonProps {
   disabled?: boolean;
   buttonViewStyle?: ViewStyle;
@@ -24,7 +25,6 @@ const ButtonView: FC<ButtonProps> = ({
   CustomLabelElement,
   ...res
 }) => {
-
   return (
     <View row flex={!noUsingFlex} centerH {...res}>
       <TouchableOpacity
@@ -38,7 +38,9 @@ const ButtonView: FC<ButtonProps> = ({
           {usingCustomLabel ? (
             <CustomLabelElement />
           ) : (
-            <Text body_bold>{label ?? ''}</Text>
+            <Text body_bold color={Colors.whiteSmoke}>
+              {label ?? ''}
+            </Text>
           )}
         </View>
       </TouchableOpacity>

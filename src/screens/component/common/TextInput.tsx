@@ -94,7 +94,7 @@ const TextInputView: FC<Props & TextInputProps> = ({
         </View>
       ) : null}
       <View
-        paddingH-16
+        paddingH-24
         bg-white
         centerV
         row
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 4,
     height: 48,
-    borderRadius: 8,
+    borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.whiteSmoke,

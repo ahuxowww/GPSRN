@@ -1,5 +1,5 @@
-import React, {useRef, ReactNode} from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useRef, ReactNode, useEffect} from 'react';
+import {StyleSheet, PermissionsAndroid} from 'react-native';
 import {View} from 'react-native-ui-lib';
 import MapView, {MAP_TYPES, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Colors, Metrics} from '../../../assets';
@@ -72,22 +72,31 @@ export const GGMap = (props: GGMapProps) => {
         // initialRegion={centerDefault}
         onPress={onPress}
         {...mapOptions}
-        region={{
-          latitude: parseFloat(data?.location.lat),
-          longitude: parseFloat(data?.location.lon),
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        }}
+        // region={{
+        //   latitude: parseFloat(data?.location.lat),
+        //   longitude: parseFloat(data?.location.lon),
+        //   latitudeDelta: 0.002,
+        //   longitudeDelta: 0.002,
+        // }}
         // hidden
-        showsTraffic
+        // showsTraffic
+        showsUserLocation
+        followsUserLocation
         rotateEnabled
         showsMyLocationButton
         showsIndoorLevelPicker
         pitchEnabled
         zoomControlEnabled
+        onMapReady={() => {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          ).then(granted => {
+            console.log(granted);
+          });
+        }}
         // onMapLoaded={() => toggleLoad(false)}
       >
-        {children}
+        {/* {children} */}
       </MapView>
     </View>
   );

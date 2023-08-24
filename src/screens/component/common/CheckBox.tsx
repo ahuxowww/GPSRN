@@ -96,8 +96,8 @@ const CheckBoxView: FC<Props> = ({
                   value
                     ? disabledWithOtherColor
                       ? Colors.blueDarkTurquoise + '4D'
-                      : Colors.blueDarkTurquoise
-                    : Colors.greyDrank
+                      : Colors.blueSmalt
+                    : Colors.blueMalibu
                 }
                 borderRadius={3}
                 borderWidth={1}
@@ -112,7 +112,7 @@ const CheckBoxView: FC<Props> = ({
       )}
       {!!label && (
         <View style={styles.viewTextLabel}>
-          <Text body_regular>{label}</Text>
+          <Text color={Colors.whiteSmoke} body_regular>{label}</Text>
         </View>
       )}
       {customRightComponent ? customRightComponent : null}

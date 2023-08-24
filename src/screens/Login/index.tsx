@@ -15,6 +15,7 @@ import {Button} from '../component/common/Button';
 import {TextInput} from '../component/common/TextInput';
 import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
 import {useUserLogin} from '@src/hooks/user';
+import {useSettings} from '@src/hooks/settings';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -26,10 +27,13 @@ const loginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const {rememberedUser, isRememberPW, onSetRememberPW, onSetcurrentUserInfo} =
+    useSettings();
   const dispatch = useDispatch<AppThunkDispatch>();
   const [height, setHeight] = useState(0);
   const [showPassword, setShowPassword] = useState(true);
-  const [agreement, setAgreement] = useState<boolean>(false);
+  const [agreement, setAgreement] = useState<boolean>(isRememberPW);
+
   const {
     control,
     formState: {errors},
@@ -38,8 +42,8 @@ const Login = () => {
   } = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      user: '',
-      password: '',
+      user: rememberedUser.user,
+      password: rememberedUser.password,
     },
   });
   const user = watch('user');
@@ -67,17 +71,30 @@ const Login = () => {
           password: password,
         }),
       );
+      onSetRememberPW({rememberPW: agreement});
+      if (agreement) {
+        onSetcurrentUserInfo({currentPW: password, user});
+      } else {
+        onSetcurrentUserInfo({user: '', currentPW: ''});
+      }
     },
-    [dispatch, password, user],
+    [
+      agreement,
+      dispatch,
+      onSetRememberPW,
+      onSetcurrentUserInfo,
+      password,
+      user,
+    ],
   );
 
   return (
-    <Container
-      safeBottom
-      backgroundColor={Colors.blueDarkTurquoise}
-      barStyle="dark-content"
-      backgroundBody={Colors.blueDarkTurquoise}>
-      <KeyboardAvoidingView>
+    <KeyboardAvoidingView>
+      <Container
+        safeBottom
+        backgroundColor={Colors.blueDarkTurquoise}
+        barStyle="dark-content"
+        backgroundBody={Colors.blueDarkTurquoise}>
         <View marginH-24 style={styles.container} onLayout={onLayout}>
           <View center marginV-20>
             <Svgs.Logo />
@@ -132,12 +149,7 @@ const Login = () => {
               <Text color={Colors.blueMalibu}>{'Quên mật khẩu?'}</Text>
             </TouchableOpacity>
           </View>
-          <View
-            row
-            marginT-16
-            marginB-40
-            backgroundColor={Colors.blueNavy}
-            style={styles.button}>
+          <View row backgroundColor={Colors.blueSmalt} style={styles.button}>
             <Button
               disabled={false}
               label={'Đăng nhập'}
@@ -145,8 +157,8 @@ const Login = () => {
             />
           </View>
         </View>
-      </KeyboardAvoidingView>
-    </Container>
+      </Container>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -177,6 +189,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 24,
+    position: 'absolute',
+    bottom: 20,
   },
 });
 

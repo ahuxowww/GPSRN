@@ -1,11 +1,11 @@
-import React, {useState, useCallback} from 'react';
-import {ScrollView, FlatList} from 'react-native';
+import React, {useState, useCallback, useEffect} from 'react';
+import {ScrollView, PermissionsAndroid} from 'react-native';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
 import {Colors} from '../../assets';
 import {TabBar} from '../component/common/TabBar';
 import {TagItem} from './components/TagItem';
-import { View } from 'react-native-ui-lib';
+import {View} from 'react-native-ui-lib';
 const tabList = [
   {label: 'Tất cả', status: 0},
   {label: 'Online', status: 1},
@@ -41,6 +41,12 @@ const HomeScreen = () => {
   }, []);
 
   const onNavtoMapScreen = useCallback(() => {}, []);
+
+  useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+  }, []);
 
   return (
     <Container
