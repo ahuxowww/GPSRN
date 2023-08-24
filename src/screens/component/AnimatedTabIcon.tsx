@@ -139,16 +139,16 @@ const AnimatedTabIcon: FC<Props> = ({active, targetScreen, title}) => {
                 style={animationStyle}
               />
             )}
-            {targetScreen === 'EVENT_REGISTRATION' && (
-              <IconHistory
+            {targetScreen === 'NOTIFICATION' && (
+              <IconNotificationsNoBag
                 color={
                   active ? Colors.blueDarkTurquoise : Colors.greyNightRider57
                 }
                 style={animationStyle}
               />
             )}
-            {targetScreen === 'NOTIFICATION' && (
-              <IconNotificationsNoBag
+            {targetScreen === 'EVENT_REGISTRATION' && (
+              <IconHistory
                 color={
                   active ? Colors.blueDarkTurquoise : Colors.greyNightRider57
                 }

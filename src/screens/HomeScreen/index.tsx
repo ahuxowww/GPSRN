@@ -1,68 +1,97 @@
-import {Image, ScrollView, StyleSheet} from 'react-native';
+import React, {useState, useCallback, useEffect} from 'react';
+import {ScrollView, PermissionsAndroid} from 'react-native';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
-import {Colors, Images, Metrics} from '../../assets';
+import {Colors} from '../../assets';
+import {TabBar} from '../component/common/TabBar';
+import {TagItem} from './components/TagItem';
 import {View} from 'react-native-ui-lib';
-import Text from '../component/common/Text';
-import Svgs from '../../assets/svg';
+const tabList = [
+  {label: 'Tất cả', status: 0},
+  {label: 'Online', status: 1},
+  {label: 'Ofline', status: 2},
+];
+
+const allVehicle = [
+  {label: 'Xe số 1', subTitle: 'Tạm dừng', time: '4:00 h', type: 'car'},
+  {label: 'Xe số 2', subTitle: 'Online', time: '2:00 h', type: 'bike'},
+  {label: 'Xe số 3', subTitle: 'Tạm dừng', time: '4:00 h', type: 'walk'},
+  {label: 'Xe số 4', subTitle: 'GPS yếu', time: '', type: 'motor'},
+];
+
+const activeVehicle = [
+  {label: 'Xe số 2', subTitle: 'Online', time: '2:00 h', type: 'bike'},
+  {label: 'Xe số 4', subTitle: 'GPS yếu', time: '', type: 'motor'},
+];
+
+const offlineVehicle = [
+  {label: 'Xe số 1', subTitle: 'Tạm dừng', time: '4:00 h', type: 'car'},
+  {label: 'Xe số 3', subTitle: 'Tạm dừng', time: '4:00 h', type: 'walk'},
+];
 
 const HomeScreen = () => {
-  const mockData = {
-    avatar: '',
-    name: 'Mai Nhat',
-    times: 12,
-    total: 3.2,
-  };
+  const [tabIndex, setTabIndex] = useState(0);
+  const onChangeType = useCallback((index: number) => {
+    // ref?.current?.scrollTo({
+    //   x: 0,
+    //   y: 0,
+    //   animated: true,
+    // });
+    setTabIndex(index);
+  }, []);
+
+  const onNavtoMapScreen = useCallback(() => {}, []);
+
+  useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+  }, []);
 
   return (
     <Container
       safeBottom
       backgroundColor={Colors.blueDarkTurquoise}
-      barStyle="light-content"
-      backgroundBody={Colors.yellowHalfDutchWhite}>
-      <MainTitle marginH-24 title="Me" />
+      barStyle="dark-content"
+      backgroundBody={Colors.white}>
+      <MainTitle marginH-24 title="Tài khoản" />
+      <TabBar
+        indexSelected={tabIndex}
+        setIndexSelected={onChangeType}
+        tabList={tabList}
+      />
       <ScrollView>
-        <View row centerV marginT-24 marginH-24>
-          <Image
-            source={mockData.avatar ? mockData.avatar : Images.logo.avatar}
-            style={styles.avatar}
-          />
-          <Text marginL-32 h_page_title>
-            {mockData?.name}
-          </Text>
-        </View>
-        <View row marginT-16>
-          <View marginL-16 style={styles.subContent}>
-            <Text body_bold>{mockData.total}</Text>
-            <Text body_regular>Total (km) {mockData?.total ? '🤗' : '😴'}</Text>
-          </View>
-          <View marginL-16 style={styles.subContent}>
-            <Text body_bold>{mockData?.times}</Text>
-            <Text body_regular>Higher speed</Text>
-          </View>
-          <View marginL-16 style={styles.subContent}>
-            <Text body_bold>0</Text>
-            <Text body_regular>To do</Text>
-          </View>
-        </View>
+        {tabIndex === 0
+          ? allVehicle.map((item: any) => (
+              <TagItem
+                title={item.label}
+                subTitle={item.subTitle}
+                type={item.type}
+                onPress={onNavtoMapScreen}
+              />
+            ))
+          : tabIndex === 1
+          ? activeVehicle.map((item: any) => (
+              <TagItem
+                title={item.label}
+                subTitle={item.subTitle}
+                type={item.type}
+                onPress={onNavtoMapScreen}
+              />
+            ))
+          : tabIndex === 2
+          ? offlineVehicle.map((item: any) => (
+              <TagItem
+                title={item.label}
+                subTitle={item.subTitle}
+                type={item.type}
+                onPress={onNavtoMapScreen}
+              />
+            ))
+          : null}
       </ScrollView>
     </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  avatar: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    borderWidth: 1,
-    resizeMode: 'cover',
-    borderColor: Colors.greyNightRider57,
-  },
-  subContent: {
-    width: (Metrics.screen.width - 48) / 3,
-    borderRightWidth: 1,
-    borderColor: Colors.greyNightRider57,
-  },
-});
 export default HomeScreen;

@@ -1,30 +1,52 @@
-import React, {FC} from 'react';
-import {View} from 'react-native-ui-lib';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {Colors, Metrics} from '../../assets';
+import React, {useCallback, FC} from 'react';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
+import {StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {Colors, Images, Metrics, Svgs} from '../../assets';
 import Text from './common/Text';
-import Svgs from '../../assets/svg';
-
 interface Props {
   customStyle?: any;
   title?: string | null;
   fontSize?: number;
   isOneLine?: boolean;
+  isgoBack?: boolean;
 }
 
 const MainTitle: FC<Props> = ({
   title,
   fontSize,
   isOneLine,
+  isgoBack,
   ...customStyle
 }) => {
   const customFontSize = fontSize ? {fontSize} : styles.title;
+  const navigation = useNavigation();
+
+  const onNavSetting = useCallback(() => {
+    navigation.navigate('SETTING_SCREEN');
+  }, [navigation]);
+
+  const onGoback = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   return (
     <View row style={styles.header}>
-      <Text h2 color={Colors.white} style={customFontSize} {...customStyle}>
-        {title}
-      </Text>
+      {isgoBack && (
+        <TouchableOpacity left marginR-16 onPress={onGoback}>
+          <Svgs.Back height={28} width={28} fill={Colors.white} />
+        </TouchableOpacity>
+      )}
+      <View center flex marginR-28={isgoBack} marginL-28={!isgoBack} >
+        <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
+          {title}
+        </Text>
+      </View>
+      {!isgoBack && (
+        <TouchableOpacity right marginR-16 onPress={onNavSetting}>
+          <Svgs.Menu height={28} width={28} fill={Colors.white} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -40,7 +62,6 @@ const styles = StyleSheet.create({
     width: Metrics.screen.width,
     backgroundColor: Colors.blueDarkTurquoise,
     alignItems: 'center',
-    justifyContent: 'space-between',
     shadowColor: Colors.black,
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -49,6 +70,13 @@ const styles = StyleSheet.create({
       width: 0,
     },
     elevation: 2,
+  },
+  icon: {
+    height: 20,
+    width: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 24,
   },
 });
 

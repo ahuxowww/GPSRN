@@ -38,7 +38,7 @@ const MainTabAnimation = () => {
           tabBarButton: props => (
             <AnimatedTabIcon
               targetScreen={'HOME'}
-              title={'Home'}
+              title={'Thiết bị'}
               active={props.accessibilityState?.selected}
             />
           ),
@@ -53,7 +53,7 @@ const MainTabAnimation = () => {
           tabBarButton: props => (
             <AnimatedTabIcon
               targetScreen={'EVENT_REGISTRATION'}
-              title={'Select'}
+              title={'Bản đồ'}
               active={props.accessibilityState?.selected}
             />
           ),
@@ -69,7 +69,7 @@ const MainTabAnimation = () => {
           tabBarButton: props => (
             <AnimatedTabIcon
               targetScreen={'NOTIFICATION'}
-              title={'Notifications'}
+              title={'Cảnh báo'}
               active={props.accessibilityState?.selected}
             />
           ),
@@ -84,7 +84,7 @@ const MainTabAnimation = () => {
           tabBarButton: props => (
             <AnimatedTabIcon
               targetScreen={'MY_PAGE'}
-              title={'My Page'}
+              title={'Tài khoản'}
               active={props.accessibilityState?.selected}
             />
           ),
