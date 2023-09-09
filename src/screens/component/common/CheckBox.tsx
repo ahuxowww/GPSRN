@@ -68,7 +68,7 @@ const CheckBoxView: FC<Props> = ({
         }
     : {backgroundColor: Colors.white};
   return (
-    <View row centerV flex>
+    <View row centerV>
       {!hiddenCheckbox && (
         <TouchableOpacity
           disabled={disabled}

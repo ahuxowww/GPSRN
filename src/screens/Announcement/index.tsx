@@ -19,19 +19,6 @@ const Map = () => {
   // const { userMapName } = useUserProfile();
 
   const renderMap = useCallback(() => {
-    // if (!userMapName || userMapName === MapType.GGMap) {
-    //   return (
-    //     <GGMap data={params}>
-    //       <Marker isGGMap data={params} />
-    //     </GGMap>
-    //   );
-    // }
-    // return (
-    //   <GLMap data={params} mapType={userMapName}>
-    //     <Marker data={params} />
-    //   </GLMap>
-    // );
-
     const data = {
       location: {
         lat: 21.035688,
@@ -40,7 +27,7 @@ const Map = () => {
     };
     return (
       <GGMap data={data}>
-        <Marker
+        {/* <Marker
           isGGMap
           data={{
             location: {
@@ -48,7 +35,7 @@ const Map = () => {
               lon: 105.851564,
             },
           }}
-        />
+        /> */}
       </GGMap>
     );
   }, []);

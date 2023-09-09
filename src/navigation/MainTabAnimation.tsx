@@ -1,5 +1,4 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import EventRegistration from '../screens/EventRegistration';
 import MyPageScreen from '../screens/MyPage';
@@ -30,7 +29,7 @@ const MainTabAnimation = () => {
         },
       }}>
       <Tab.Screen
-        name="HOMESCREEN"
+        name="HomeScreen"
         component={HomeScreen}
         options={{
           headerShown: false,
@@ -45,24 +44,8 @@ const MainTabAnimation = () => {
         }}
       />
       <Tab.Screen
-        name="EVENT_REGISTRATION"
+        name="NotificationStack"
         component={EventRegistration}
-        options={{
-          headerShown: false,
-          unmountOnBlur: true,
-          tabBarButton: props => (
-            <AnimatedTabIcon
-              targetScreen={'EVENT_REGISTRATION'}
-              title={'Bản đồ'}
-              active={props.accessibilityState?.selected}
-            />
-          ),
-
-        }}
-      />
-      <Tab.Screen
-        name="NOTIFICATION"
-        component={AnnouncementScreen}
         options={{
           headerShown: false,
           unmountOnBlur: true,
@@ -73,10 +56,26 @@ const MainTabAnimation = () => {
               active={props.accessibilityState?.selected}
             />
           ),
+
         }}
       />
       <Tab.Screen
-        name="MY_PAGE"
+        name="LocationStack"
+        component={AnnouncementScreen}
+        options={{
+          headerShown: false,
+          unmountOnBlur: true,
+          tabBarButton: props => (
+            <AnimatedTabIcon
+              targetScreen={'EVENT_REGISTRATION'}
+              title={'Bản đồ'}
+              active={props.accessibilityState?.selected}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MyPageStack"
         component={MyPageScreen}
         options={{
           headerShown: false,
@@ -93,12 +92,5 @@ const MainTabAnimation = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  logo: {
-    width: 18,
-    height: 18,
-  },
-});
 
 export default MainTabAnimation;

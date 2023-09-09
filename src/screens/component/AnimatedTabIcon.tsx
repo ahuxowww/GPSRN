@@ -94,16 +94,16 @@ const AnimatedTabIcon: FC<Props> = ({active, targetScreen, title}) => {
     onAction();
     switch (targetScreen?.toLocaleUpperCase()) {
       case 'HOME':
-        navigation.navigate('HOMESCREEN');
+        navigation.navigate('HomeScreen');
         break;
       case 'EVENT_REGISTRATION':
-        navigation.navigate('EVENT_REGISTRATION');
+        navigation.navigate('LocationStack');
         break;
       case 'NOTIFICATION':
-        navigation.navigate('NOTIFICATION');
+        navigation.navigate('NotificationStack');
         break;
       case 'MY_PAGE':
-        navigation.navigate('MY_PAGE');
+        navigation.navigate('MyPageStack');
         break;
     }
   }, [navigation, onAction, targetScreen]);

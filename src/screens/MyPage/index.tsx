@@ -32,6 +32,10 @@ const MyPageScreen = () => {
     navigation.navigate('CHANGE_PROFILE_SCREEN', {textName: mockData?.name});
   }, [mockData?.name, navigation]);
 
+  const onNavToVehicle = useCallback(() => {
+    navigation.navigate('SELECT_VEHICLE_SCREEN', {isProfile: true});
+  }, [navigation]);
+
   const onLogOut = useCallback(async () => {
     dispatch(UserThunk.Logout());
   }, [dispatch]);
@@ -100,6 +104,19 @@ const MyPageScreen = () => {
               Người dùng: {!isSwitch ? 'Người đi' : 'Người theo dõi'}
             </Text>
             <Switch isSwitch={isSwitch} onChangeSwitch={onChangeSwitch} />
+          </View>
+        </View>
+        <View marginT-12>
+          <View
+            row
+            paddingH-24
+            paddingV-12
+            spread
+            backgroundColor={Colors.white}>
+            <Text h_page_title>Phương tiện</Text>
+            <TouchableOpacity onPress={onNavToVehicle}>
+              <Svgs.ArrowRight width={24} height={24} />
+            </TouchableOpacity>
           </View>
         </View>
         <View marginT-40>

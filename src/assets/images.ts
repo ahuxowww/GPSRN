@@ -9,5 +9,9 @@ export const images = {
     left: require('./icons/left.png'),
     settings: require('./icons/settings.png'),
     menu: require('./icons/menu.png'),
+    motor: require('./icons/motor.jpg'),
+    top_motor: require('./icons/motor_top.png'),
+    car: require('./icons/UberX.jpeg'),
+    top_car: require('./icons/top-UberX.png'),
   },
 };

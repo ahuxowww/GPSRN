@@ -136,7 +136,7 @@ const TextInputView: FC<Props & TextInputProps> = ({
                 autoCorrect={false}
                 selectionColor={Colors.greyNightRider}
                 underlineColor={false}
-                secureTextEntry={secureTextEntry && (selected || value !== '')}
+                secureTextEntry={secureTextEntry}
                 style={[styles.input, inputStyle]}
                 readonly={disabled}
                 {...props}
@@ -175,7 +175,7 @@ const TextInputView: FC<Props & TextInputProps> = ({
                 {...props}
                 placeholder={selected ? '' : placeholder}
                 placeholderTextColor={Colors.greyDrank}
-                secureTextEntry={secureTextEntry && (selected || value !== '')}
+                secureTextEntry={secureTextEntry}
               />
             </View>
           )}

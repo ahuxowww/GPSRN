@@ -1,6 +1,6 @@
 import {Colors, Metrics, Svgs} from '@src/assets';
-import React, {useCallback, useState} from 'react';
-import {LayoutChangeEvent, StyleSheet} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {LayoutChangeEvent, StyleSheet, ScrollView} from 'react-native';
 import {Text, TouchableOpacity, View} from 'react-native-ui-lib';
 import * as Yup from 'yup';
 import {useDispatch} from 'react-redux';
@@ -14,7 +14,6 @@ import {CheckBox} from '../component/common/CheckBox';
 import {Button} from '../component/common/Button';
 import {TextInput} from '../component/common/TextInput';
 import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
-import {useUserLogin} from '@src/hooks/user';
 import {useSettings} from '@src/hooks/settings';
 
 const loginSchema = Yup.object().shape({
@@ -30,10 +29,9 @@ const Login = () => {
   const {rememberedUser, isRememberPW, onSetRememberPW, onSetcurrentUserInfo} =
     useSettings();
   const dispatch = useDispatch<AppThunkDispatch>();
-  const [height, setHeight] = useState(0);
   const [showPassword, setShowPassword] = useState(true);
   const [agreement, setAgreement] = useState<boolean>(isRememberPW);
-
+  const scrollViewRef = useRef<any>();
   const {
     control,
     formState: {errors},
@@ -48,10 +46,6 @@ const Login = () => {
   });
   const user = watch('user');
   const password = watch('password');
-
-  const onLayout = useCallback(({nativeEvent}: LayoutChangeEvent) => {
-    setHeight(nativeEvent.layout.height);
-  }, []);
 
   const onAgreement = useCallback((value: boolean) => {
     setAgreement(value);
@@ -88,15 +82,22 @@ const Login = () => {
     ],
   );
 
+  const onBlur = useCallback(() => {
+    scrollViewRef?.current?.scrollToEnd();
+  }, [scrollViewRef]);
+  console.log(showPassword);
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView undefinedBehavior style={styles.safeView}>
       <Container
         safeBottom
         backgroundColor={Colors.blueDarkTurquoise}
         barStyle="dark-content"
         backgroundBody={Colors.blueDarkTurquoise}>
-        <View marginH-24 style={styles.container} onLayout={onLayout}>
-          <View center marginV-20>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.container}
+          showsVerticalScrollIndicator={false}>
+          <View center marginV-20 marginT-50>
             <Svgs.Logo />
           </View>
           <View centerH>
@@ -115,6 +116,7 @@ const Login = () => {
                   onPressIcon={() => {}}
                   isError={!!errors?.user?.message}
                   messageError={errors?.user?.message}
+                  onFocus={onBlur}
                 />
               )}
             />
@@ -135,6 +137,7 @@ const Login = () => {
                   secureTextEntry={showPassword}
                   isError={!!errors?.password?.message}
                   messageError={errors?.password?.message}
+                  onFocus={onBlur}
                 />
               )}
             />
@@ -149,14 +152,18 @@ const Login = () => {
               <Text color={Colors.blueMalibu}>{'Quên mật khẩu?'}</Text>
             </TouchableOpacity>
           </View>
-          <View row backgroundColor={Colors.blueSmalt} style={styles.button}>
+          <View
+            marginB-20
+            row
+            backgroundColor={Colors.blueSmalt}
+            style={styles.button}>
             <Button
               disabled={false}
               label={'Đăng nhập'}
               onPress={handleSubmit(onSubmit)}
             />
           </View>
-        </View>
+        </ScrollView>
       </Container>
     </KeyboardAvoidingView>
   );
@@ -165,11 +172,10 @@ const Login = () => {
 const styles = StyleSheet.create({
   safeView: {
     flex: 1,
-    height: Metrics.screen.height,
   },
   container: {
     flex: 1,
-    marginTop: 50,
+    marginHorizontal: 24,
   },
   texFiledContainer: {
     textAlign: 'center',
@@ -189,8 +195,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 24,
-    position: 'absolute',
-    bottom: 20,
+    marginTop: 24,
   },
 });
 
