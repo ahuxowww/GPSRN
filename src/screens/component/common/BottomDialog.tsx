@@ -4,7 +4,7 @@ import {Modal, Platform, StyleSheet, Image} from 'react-native';
 
 import {KeyboardAvoidingView} from './KeyboardAvoidingView';
 import {Colors, Images, Metrics} from '../../../assets';
-import {Header} from './Button';
+import { Header } from './Header';
 
 interface Props {
   children: ReactNode;

@@ -33,7 +33,7 @@ const SelectVehicleScreen = () => {
       backgroundColor={Colors.blueDarkTurquoise}
       barStyle="dark-content"
       backgroundBody={Colors.blueDarkTurquoise}>
-      <MainTitle isgoBack marginH-24 title="Phương tiện" />
+      <MainTitle isgoBack={isProfile} notMenu={!isProfile} marginH-24 title="Phương tiện" />
       <ScrollView style={styles.container}>
         <View marginT-12></View>
         <Card paddingV-16 marginT-24 backgroundColor={Colors.white}>

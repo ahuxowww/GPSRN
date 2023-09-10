@@ -8,12 +8,12 @@ import {useUserLogin} from '@src/hooks/user';
 import SelectVehicleScreen from '@src/screens/SelectVehicle';
 import SettingScreen from '@src/screens/settings';
 import {useVehicle} from '@src/hooks/vehicle';
+import ChangeNameScreen from '@src/screens/ChangeNameProfile';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
   const {user} = useUserLogin();
   const {getVehicle} = useVehicle();
-  console.log(getVehicle, 'getvehicle');
   const isLogin = user?.type === 'LOGIN';
   return (
     <NavigationContainer>
@@ -46,6 +46,11 @@ const AppNavigation: React.FC = () => {
             <Stack.Screen
               name="CHANGE_PROFILE_SCREEN"
               component={ChangeProfileScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CHANGE_NAME_PROFILE_SCREEN"
+              component={ChangeNameScreen}
               options={{headerShown: false}}
             />
             {getVehicle ? (

@@ -10,6 +10,8 @@ interface Props {
   fontSize?: number;
   isOneLine?: boolean;
   isgoBack?: boolean;
+  notMenu?: boolean;
+  customRightIcon?: React.ReactNode;
 }
 
 const MainTitle: FC<Props> = ({
@@ -17,6 +19,8 @@ const MainTitle: FC<Props> = ({
   fontSize,
   isOneLine,
   isgoBack,
+  customRightIcon,
+  notMenu,
   ...customStyle
 }) => {
   const customFontSize = fontSize ? {fontSize} : styles.title;
@@ -33,20 +37,23 @@ const MainTitle: FC<Props> = ({
   return (
     <View row style={styles.header}>
       {isgoBack && (
-        <TouchableOpacity left marginR-16 onPress={onGoback}>
+        <TouchableOpacity left marginL-8 onPress={onGoback}>
           <Svgs.Back height={28} width={28} fill={Colors.white} />
         </TouchableOpacity>
       )}
-      <View center flex marginR-28={isgoBack} marginL-28={!isgoBack} >
+      <View center flex marginR-28={isgoBack} marginL-28={!notMenu}>
         <Text h3 color={Colors.white} style={customFontSize} {...customStyle}>
           {title}
         </Text>
       </View>
-      {!isgoBack && (
-        <TouchableOpacity right marginR-16 onPress={onNavSetting}>
-          <Svgs.Menu height={28} width={28} fill={Colors.white} />
-        </TouchableOpacity>
-      )}
+      {!notMenu &&
+        (customRightIcon ? (
+          customRightIcon
+        ) : (
+          <TouchableOpacity right marginR-16 onPress={onNavSetting}>
+            <Svgs.Menu height={28} width={28} fill={Colors.white} />
+          </TouchableOpacity>
+        ))}
     </View>
   );
 };

@@ -3,24 +3,24 @@ import {actions} from './UserActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const postLogin =
-  (payload: any): AppThunk =>
+  (payload?: any): AppThunk =>
   async (dispatch, _appState) => {
     try {
       let token = null;
+      console.log({payload})
       if (payload.username === 'ahuhuxoac' && payload.password === '123456') {
         token = payload.username + payload.password;
         // here we can use login api to get token and then store it
         await AsyncStorage.setItem('token', token);
-        console.log('token stored');
+        await dispatch(
+          actions.saveUser({
+            user: {
+              type: 'LOGIN',
+              payload: payload,
+            },
+          }),
+        );
       }
-      dispatch(
-        actions.saveUser({
-          user: {
-            type: 'LOGIN',
-            payload: token,
-          },
-        }),
-      );
     } catch (e) {
       console.log('postLogin Thunk Err>>>>', e);
       throw e;

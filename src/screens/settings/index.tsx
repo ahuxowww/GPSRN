@@ -12,7 +12,7 @@ const SettingScreen = () => {
       backgroundColor={Colors.blueDarkTurquoise}
       barStyle="dark-content"
       backgroundBody={Colors.white}>
-      <MainTitle isgoBack marginH-24 title="Cài đặt" />
+      <MainTitle isgoBack notMenu marginH-24 title="Cài đặt" />
       <BottomSheetDetails totalKm={101} totalMinutes={20} />
     </Container>
   );

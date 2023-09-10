@@ -4,7 +4,6 @@ import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
 import {Colors} from '../../assets';
 import {View} from 'react-native-ui-lib';
-import SevenSegmentDisplay from 'rn-seven-segment-display';
 import Text from '../component/common/Text';
 
 const EventRegistration = () => {
@@ -38,16 +37,7 @@ const EventRegistration = () => {
         </Text>
         <View row center>
           {valueSpeed.split('').map((value, index) => {
-            return (
-              <SevenSegmentDisplay
-                offColor={Colors.orangeBrown}
-                onColor={Colors.blueNavy}
-                height={36}
-                width={36}
-                key={index}
-                value={value}
-              />
-            );
+            return <></>;
           })}
         </View>
         <View
@@ -64,16 +54,7 @@ const EventRegistration = () => {
                 .toString()
                 .split('')
                 .map((value, index) => {
-                  return (
-                    <SevenSegmentDisplay
-                      offColor={Colors.orangeBrown}
-                      onColor={Colors.blueNavy}
-                      height={8}
-                      width={8}
-                      key={index}
-                      value={value}
-                    />
-                  );
+                  return <></>;
                 })}
               <Text marginB-4 color={Colors.blueNavy}>
                 KM

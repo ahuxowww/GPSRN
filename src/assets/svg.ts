@@ -13,3 +13,6 @@ export {default as Edit} from './svg/edit.svg';
 export {default as Eye} from './svg/grey_eye.svg';
 export {default as HideEye} from './svg/hide_eye.svg';
 export {default as Logo} from './svg/logo.svg';
+export {default as CheckSuccess} from './svg/check_success.svg';
+export {default as Camera} from './svg/camera.svg';
+export {default as Image} from './svg/image.svg';
