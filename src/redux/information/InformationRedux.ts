@@ -1,44 +1,47 @@
 import {persistReducer} from 'redux-persist';
 import {createReducer, getType} from 'typesafe-actions';
 
-import {actions} from './UserActions';
+import {actions} from './InformationActions';
 import {storage} from '../_reduxPersist/persistConfig';
 
-const stateKey = 'user';
+const stateKey = 'information';
 
-export interface AppState {
-  user: any;
-  followUser: boolean;
+export interface Information {
+  speed: number;
+  time: number;
+  distance: number;
+}
+
+export interface InfomationState {
+  information: Information;
 }
 
 /* ------------- Initial State ------------- */
-const INITIAL_STATE: AppState = {
-  user: false,
-  followUser: false,
+const INITIAL_STATE: InfomationState = {
+  information: {
+    speed: 0,
+    time: 0,
+    distance: 0,
+  },
 };
 
 /* ------------- Reducers ------------- */
 
-const saveUser = (
-  state: AppState,
-  {payload: {user}}: ReturnType<typeof actions.saveUser>,
+const saveInfomation = (
+  state: InfomationState,
+  {payload: {speed, time, distance}}: ReturnType<typeof actions.saveInfomation>,
 ) => ({
   ...state,
-  user: user,
-});
-
-const saveFolowUser = (
-  state: AppState,
-  {payload: {followUser}}: ReturnType<typeof actions.saveFolowUser>,
-) => ({
-  ...state,
-  followUser: followUser,
+  information: {
+    speed,
+    time,
+    distance,
+  },
 });
 
 /* ------------- Hookup Reducers To Types ------------- */
 const reducer = createReducer(INITIAL_STATE, {
-  [getType(actions.saveUser)]: saveUser,
-  [getType(actions.saveFolowUser)]: saveFolowUser,
+  [getType(actions.saveInfomation)]: saveInfomation,
 });
 
 const persistConfig = {
@@ -51,10 +54,9 @@ const reducerMap = {
 };
 
 /* ------------- Selectors ------------- */
-const getReducerState = (state: any): AppState => state[stateKey];
+const getReducerState = (state: any): InfomationState => state[stateKey];
 const selectors = {
-  getUserData: ({user}: AppState) => user,
-  getFollowUser: ({followUser}: AppState) => followUser,
+  getConnectInformation: ({information}: InfomationState) => information,
 };
 
 /* ------------- Export ------------- */

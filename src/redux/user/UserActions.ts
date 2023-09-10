@@ -7,9 +7,14 @@ const saveUser = createAction(typePrefixFormat('saveUser'))<{
   user: any;
 }>();
 
+const saveFolowUser = createAction(typePrefixFormat('saveFolowUser'))<{
+  followUser: boolean;
+}>();
+
 const logout = createAction(typePrefixFormat('logout'))();
 
 export const actions = {
   logout,
   saveUser,
+  saveFolowUser,
 };

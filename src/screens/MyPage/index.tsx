@@ -1,8 +1,8 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
-import {Colors, Images, Metrics, Svgs} from '../../assets';
+import {Colors, Metrics, Svgs} from '../../assets';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
 import {Switch} from '../component/common/Switch';
@@ -10,15 +10,16 @@ import {useNavigation} from '@react-navigation/native';
 import {UserThunk} from '@src/redux/thunks';
 import {useDispatch} from 'react-redux';
 import {AppThunkDispatch} from '@src/redux/common';
+import {useUserLogin} from '@src/hooks/user';
 
 const MyPageScreen = () => {
-  const [isSwitch, setSwitch] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch<AppThunkDispatch>();
+  const {user, followUser, onChangeFollowUser} = useUserLogin();
 
-  const onChangeSwitch = useCallback(() => {
-    setSwitch(!isSwitch);
-  }, [isSwitch]);
+  const onChangeSwitch = useCallback(async () => {
+    await onChangeFollowUser({followUser: followUser ? !followUser : true});
+  }, [followUser, onChangeFollowUser]);
 
   const mockData = {
     avatar:
@@ -29,8 +30,8 @@ const MyPageScreen = () => {
   };
 
   const onNavToProfile = useCallback(() => {
-    navigation.navigate('CHANGE_PROFILE_SCREEN', {textName: mockData?.name});
-  }, [mockData?.name, navigation]);
+    navigation.navigate('CHANGE_PROFILE_SCREEN');
+  }, [navigation]);
 
   const onLogOut = useCallback(async () => {
     dispatch(UserThunk.Logout());
@@ -55,12 +56,14 @@ const MyPageScreen = () => {
             <View row centerV>
               <Image
                 source={
-                  mockData.avatar ? {uri: mockData.avatar} : Images.logo.avatar
+                  user?.payload?.avatar
+                    ? {uri: user?.payload?.avatar}
+                    : {uri: mockData.avatar}
                 }
                 style={styles.avatar}
               />
               <Text marginL-24 h_page_title>
-                {mockData?.name}
+                {user?.payload?.name ?? mockData?.name}
               </Text>
             </View>
             <TouchableOpacity onPress={onNavToProfile}>
@@ -97,9 +100,12 @@ const MyPageScreen = () => {
             spread
             backgroundColor={Colors.white}>
             <Text h_page_title>
-              Người dùng: {!isSwitch ? 'Người đi' : 'Người theo dõi'}
+              Người dùng: {!followUser ? 'Người đi' : 'Người theo dõi'}
             </Text>
-            <Switch isSwitch={isSwitch} onChangeSwitch={onChangeSwitch} />
+            <Switch
+              isSwitch={followUser || false}
+              onChangeSwitch={onChangeSwitch}
+            />
           </View>
         </View>
         <View marginT-40>

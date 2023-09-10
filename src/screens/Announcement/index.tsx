@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {Image, ScrollView, StyleSheet} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Image, ScrollView, StyleSheet, PermissionsAndroid} from 'react-native';
 import Container from '../component/Container';
 import {GGMap} from './component/GGMap';
 import {Marker} from './component/Marker';
@@ -8,8 +8,11 @@ import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MainTitle from '../component/MainTitle';
 import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
+import {useUserLogin} from '@src/hooks/user';
 
 const Map = () => {
+  const {followUser} = useUserLogin();
+
   const status = [
     {label: 'An toàn', status: 1},
     {label: 'Nguy hiểm', status: 2},
@@ -39,12 +42,10 @@ const Map = () => {
       </GGMap>
     );
   }, []);
-  const actionMotor = 1;
 
   const mockData = [
     {title: 'Tốc độ', value: '37.2', type: 'km/h'},
     {title: 'Quãng đường đi đến xe của bạn', value: '32', type: 'km'},
-    {title: 'Thời gian', value: '30', type: 'giờ'},
     {title: 'Tình trạng', value: 'An Toàn', type: '', color: 'green'},
   ];
 
@@ -70,9 +71,11 @@ const Map = () => {
       return (
         <View style={styles.itemJourney}>
           <View row style={{justifyContent: 'space-between'}}>
-            <Text h2 color={Colors.white}>
-              {item.title}
-            </Text>
+            <View flex>
+              <Text h2 color={Colors.white}>
+                {item.title}
+              </Text>
+            </View>
             <TouchableOpacity onPress={onCloseBottomDetail}>
               <Svgs.Close width={24} height={24} fill={Colors.white} />
             </TouchableOpacity>
@@ -95,6 +98,14 @@ const Map = () => {
     },
     [],
   );
+
+  useEffect(() => {
+    !followUser &&
+      PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+      ]);
+  }, [followUser]);
 
   return (
     <Container
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
   itemJourney: {
-    height: Metrics.screen.height / 4,
+    height: 200,
     backgroundColor: Colors.blueDarkTurquoise,
     borderRadius: 16,
     padding: 16,

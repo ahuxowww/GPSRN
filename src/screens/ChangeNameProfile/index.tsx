@@ -21,12 +21,12 @@ const ChangeNameScreen = () => {
     setTextValue(value);
   }, []);
 
-  const onSaveNameText = useCallback(() => {
+  const onSaveNameText = useCallback(async () => {
     const payloadName = textValue ? {name: textValue} : {};
     const payloadAvatar = user?.payload?.avatar
       ? {avatar: user?.payload?.avatar}
       : {};
-    dispatch(
+    await dispatch(
       UserThunk.postLogin({
         username: user?.payload?.username,
         password: user?.payload?.password,

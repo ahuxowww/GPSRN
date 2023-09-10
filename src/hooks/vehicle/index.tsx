@@ -21,6 +21,6 @@ export const useVehicle = () => {
 
   return {
     getVehicle,
-    onChangeVehicle
+    onChangeVehicle,
   };
 };

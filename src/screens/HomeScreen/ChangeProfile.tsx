@@ -16,12 +16,12 @@ import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 const avatarState = [
   {
-    label: 'Chụp ảnh',
+    label: 'Tải lên từ thư viện',
     icon: <Svgs.Image width={24} height={24} fill={Colors.greyDrank} />,
   },
   {
-    label: 'Tải lên từ thư viện',
-    icon: <Svgs.Camera width={24} height={24} fill={Colors.greyDrank} />,
+    label: 'Chụp ảnh',
+    icon: <Svgs.Camera width={20} height={20} fill={Colors.greyDrank} />,
   },
 ];
 const ChangeProfileScreen = () => {
@@ -38,25 +38,28 @@ const ChangeProfileScreen = () => {
     navigation.navigate('CHANGE_NAME_PROFILE_SCREEN');
   }, [navigation]);
 
-  const onSaveAvatar = useCallback(() => {
-    // const payloadName = textValue ? {name: textValue} : {};
-    const payloadName = user?.payload?.name
-      ? {avatar: user?.payload?.name}
-      : {};
-    dispatch(
-      UserThunk.postLogin({
-        username: user?.payload?.username,
-        password: user?.payload?.password,
-        ...payloadName,
-        // ...payloadAvatar,
-      }),
-    );
-  }, [
-    dispatch,
-    user?.payload?.name,
-    user?.payload?.password,
-    user?.payload?.username,
-  ]);
+  const onSaveAvatar = useCallback(
+    async (avatar: string) => {
+      const payloadAvatar = avatar ? {avatar: avatar} : {};
+      const payloadName = user?.payload?.name
+        ? {avatar: user?.payload?.name}
+        : {};
+      await dispatch(
+        UserThunk.postLogin({
+          username: user?.payload?.username,
+          password: user?.payload?.password,
+          ...payloadName,
+          ...payloadAvatar,
+        }),
+      );
+    },
+    [
+      dispatch,
+      user?.payload?.name,
+      user?.payload?.password,
+      user?.payload?.username,
+    ],
+  );
 
   const onOpenModal = useCallback(() => {
     setVisible(true);
@@ -84,17 +87,10 @@ const ChangeProfileScreen = () => {
       } else if (response.errorCode === 'others') {
         return;
       }
-      // setMessageFile([
-      //   ...messageFile,
-      //   {
-      //     uri: response?.assets[0]?.uri,
-      //     name: response?.assets[0]?.fileName,
-      //     type: response?.assets[0]?.type,
-      //   },
-      // ]);
+      onSaveAvatar(response?.assets[0]?.uri);
       setVisible(false);
     });
-  }, []);
+  }, [onSaveAvatar]);
 
   const requestCameraPermission = useCallback(async () => {
     try {
@@ -126,35 +122,31 @@ const ChangeProfileScreen = () => {
     } catch (err) {}
   }, [onLaunchCamera]);
 
-  const onSelectImage = useCallback(async (val: number) => {
-    if (val === 0) {
-      setVisible(false);
-      launchImageLibrary(
-        {
-          mediaType: 'photo',
-          includeBase64: true,
-          quality: 0.6,
-          maxWidth: 150,
-          maxHeight: 150,
-          selectionLimit: 1,
-        },
-        ({assets}) => {
-          if (assets && assets[0] && assets[0]?.base64 && assets[0]?.uri) {
-            // setMessageFile([
-            //   ...messageFile,
-            //   {
-            //     uri: assets[0]?.uri,
-            //     name: assets[0]?.fileName,
-            //     type: assets[0]?.type,
-            //   },
-            // ]);
-          }
-        },
-      );
-    } else if (val === 1) {
-      await requestCameraPermission();
-    }
-  }, []);
+  const onSelectImage = useCallback(
+    async (val: number) => {
+      if (val === 0) {
+        setVisible(false);
+        launchImageLibrary(
+          {
+            mediaType: 'photo',
+            includeBase64: true,
+            quality: 0.6,
+            maxWidth: 150,
+            maxHeight: 150,
+            selectionLimit: 1,
+          },
+          ({assets}) => {
+            if (assets && assets[0] && assets[0]?.base64 && assets[0]?.uri) {
+              onSaveAvatar(assets[0]?.uri);
+            }
+          },
+        );
+      } else if (val === 1) {
+        await requestCameraPermission();
+      }
+    },
+    [onSaveAvatar, requestCameraPermission],
+  );
 
   const renderKeyExtractor = (item: any, index: number) => index.toString();
 

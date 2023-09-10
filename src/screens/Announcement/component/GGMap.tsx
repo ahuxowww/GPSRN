@@ -6,6 +6,7 @@ import {Colors, Metrics} from '../../../assets';
 import Geolocation from 'react-native-geolocation-service';
 import {calculateDistance} from '@src/domain/map';
 import {Marker} from './Marker';
+import {useVehicle} from '@src/hooks/vehicle';
 interface GGMapProps {
   onPress?: (feature: any) => void;
   center?: {
@@ -24,6 +25,7 @@ export const GGMap = (props: GGMapProps) => {
   const [totalDistance, setTotalDistance] = useState(0);
   const [previousPosition, setPreviousPosition] = useState<any | null>(null);
   const mapRef = useRef<any>(null);
+  const {getVehicle} = useVehicle();
   const mapOptions = {
     scrollEnabled: true,
   };
@@ -97,14 +99,7 @@ export const GGMap = (props: GGMapProps) => {
         showsMyLocationButton
         showsIndoorLevelPicker
         pitchEnabled
-        zoomControlEnabled
-        onMapReady={() => {
-          PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          ).then(granted => {
-            console.log(granted);
-          });
-        }}>
+        zoomControlEnabled>
         <Marker
           isGGMap
           data={{
@@ -112,8 +107,8 @@ export const GGMap = (props: GGMapProps) => {
               lat: previousPosition?.coords?.latitude,
               lon: previousPosition?.coords?.longitude,
             },
-            type: 'car',
-            heading: previousPosition?.coords?.heading
+            type: getVehicle,
+            heading: previousPosition?.coords?.heading,
           }}
         />
       </MapView>

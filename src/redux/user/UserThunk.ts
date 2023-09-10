@@ -7,7 +7,6 @@ export const postLogin =
   async (dispatch, _appState) => {
     try {
       let token = null;
-      console.log({payload})
       if (payload.username === 'ahuhuxoac' && payload.password === '123456') {
         token = payload.username + payload.password;
         // here we can use login api to get token and then store it

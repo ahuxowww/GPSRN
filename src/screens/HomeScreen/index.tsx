@@ -42,12 +42,6 @@ const HomeScreen = () => {
 
   const onNavtoMapScreen = useCallback(() => {}, []);
 
-  useEffect(() => {
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
-  }, []);
-
   return (
     <Container
       safeBottom
