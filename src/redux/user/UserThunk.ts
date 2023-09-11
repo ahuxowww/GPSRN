@@ -19,6 +19,14 @@ export const postLogin =
             },
           }),
         );
+      } else {
+        dispatch(
+          actions.saveUser({
+            user: {
+              type: 'WRONGPASS',
+            },
+          }),
+        );
       }
     } catch (e) {
       console.log('postLogin Thunk Err>>>>', e);

@@ -12,9 +12,9 @@ import ChangeNameScreen from '@src/screens/ChangeNameProfile';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
-  const {user} = useUserLogin();
+  const {currentUser} = useUserLogin();
   const {getVehicle} = useVehicle();
-  const isLogin = user?.type === 'LOGIN';
+  const isLogin = currentUser?.type === 'LOGIN';
   return (
     <NavigationContainer>
       <Stack.Navigator>
