@@ -11,7 +11,7 @@ export const postLogin =
         token = payload.username + payload.password;
         // here we can use login api to get token and then store it
         await AsyncStorage.setItem('token', token);
-        await dispatch(
+        dispatch(
           actions.saveUser({
             user: {
               type: 'LOGIN',
@@ -19,6 +19,7 @@ export const postLogin =
             },
           }),
         );
+        return 'LOGIN';
       } else {
         dispatch(
           actions.saveUser({
@@ -27,6 +28,7 @@ export const postLogin =
             },
           }),
         );
+        return 'WRONGPASS';
       }
     } catch (e) {
       console.log('postLogin Thunk Err>>>>', e);
@@ -34,13 +36,17 @@ export const postLogin =
     }
   };
 
-export const Logout = () => async (dispatch, _appState) => {
-  await AsyncStorage.clear();
-  dispatch(
-    actions.saveUser({
-      user: {
-        type: 'LOGOUT',
-      },
-    }),
-  );
+export const Logout = (): AppThunk => async (dispatch, _appState) => {
+  try {
+    await AsyncStorage.clear();
+    dispatch(
+      actions.saveUser({
+        user: {
+          type: 'LOGOUT',
+        },
+      }),
+    );
+  } catch (e) {
+    throw e;
+  }
 };

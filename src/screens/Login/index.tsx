@@ -1,5 +1,5 @@
 import {Colors, Metrics, Svgs} from '@src/assets';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {LayoutChangeEvent, StyleSheet, ScrollView} from 'react-native';
 import {Text, TouchableOpacity, View} from 'react-native-ui-lib';
 import * as Yup from 'yup';
@@ -63,15 +63,15 @@ const Login = () => {
   const onSubmit = useCallback(
     async data => {
       console.log('Login screen >>>>>', data);
-      dispatch(
+      const res: any = dispatch(
         UserThunk.postLogin({
           username: user,
           password: password,
         }),
       );
-      if (currentUser?.type === 'WRONGPASS') {
+      if (res?._j === 'WRONGPASS') {
         setWrongPassword(true);
-      } else {
+      } else if (res?._j === 'LOGIN') {
         onSetRememberPW({rememberPW: agreement});
         if (agreement) {
           onSetcurrentUserInfo({currentPW: password, user});
@@ -82,7 +82,6 @@ const Login = () => {
     },
     [
       agreement,
-      currentUser,
       dispatch,
       onSetRememberPW,
       onSetcurrentUserInfo,

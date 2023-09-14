@@ -8,15 +8,15 @@ import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MainTitle from '../component/MainTitle';
 import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
-import {useUserLogin} from '@src/hooks/user';
+import {useConnectMap} from '@src/hooks/map';
 
 const Map = () => {
-  const {followUser} = useUserLogin();
-
   const status = [
     {label: 'An toàn', status: 1},
     {label: 'Nguy hiểm', status: 2},
   ];
+
+  const {getSpeed, getDistance, getStateMap} = useConnectMap();
 
   const [bottomMapDialog, setBottomMapDialog] = useState(false);
   // const { userMapName } = useUserProfile();
@@ -44,9 +44,21 @@ const Map = () => {
   }, []);
 
   const mockData = [
-    {title: 'Tốc độ', value: '37.2', type: 'km/h'},
-    {title: 'Quãng đường đi đến xe của bạn', value: '32', type: 'km'},
-    {title: 'Tình trạng', value: 'An Toàn', type: '', color: 'green'},
+    {title: 'Tốc độ', value: (getSpeed * 3.6).toFixed(2), type: 'km/h'},
+    {
+      title: 'Quãng đường đi đến xe của bạn',
+      value:
+        getDistance / 1000 > 1
+          ? (getDistance / 1000).toFixed(2)
+          : getDistance.toFixed(2),
+      type: getDistance / 1000 > 1 ? 'km' : 'm',
+    },
+    {
+      title: 'Tình trạng',
+      value: status[getStateMap ?? 0].label,
+      type: '',
+      color: 'green',
+    },
   ];
 
   const onOpenBottomDetail = useCallback(() => {
@@ -98,14 +110,6 @@ const Map = () => {
     },
     [],
   );
-
-  useEffect(() => {
-    !followUser &&
-      PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-      ]);
-  }, [followUser]);
 
   return (
     <Container
