@@ -9,12 +9,33 @@ import SelectVehicleScreen from '@src/screens/SelectVehicle';
 import SettingScreen from '@src/screens/settings';
 import {useVehicle} from '@src/hooks/vehicle';
 import ChangeNameScreen from '@src/screens/ChangeNameProfile';
+import {useDispatch} from 'react-redux';
+import {AppThunkDispatch} from '@src/redux/common';
+import {onValue, ref, set} from 'firebase/database';
+import {db} from '../../../configs';
+import {actions} from '@src/redux/location/LocationActions';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
   const {currentUser} = useUserLogin();
   const {getVehicle} = useVehicle();
   const isLogin = currentUser?.type === 'LOGIN';
+
+  const dispatch = useDispatch<AppThunkDispatch>();
+  React.useEffect(() => {
+    const starCountRef = ref(db, 'GPS/');
+
+    onValue(starCountRef, snapshot => {
+      const data = snapshot.val();
+      // const newPosts = Object.keys(data).map(key => ({
+      //   id: key,
+      //   ...data[key],
+      // }));
+      dispatch(actions.onSetLatitude(data?.f_latitude ?? 0));
+      dispatch(actions.onSetLongitude(data?.f_longitude ?? 0));
+    });
+  }, [dispatch]);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
