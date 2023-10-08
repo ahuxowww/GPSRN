@@ -1,5 +1,5 @@
 import {Colors, Metrics, Svgs} from '@src/assets';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {LayoutChangeEvent, StyleSheet, ScrollView} from 'react-native';
 import {Text, TouchableOpacity, View} from 'react-native-ui-lib';
 import * as Yup from 'yup';
@@ -15,6 +15,8 @@ import {Button} from '../component/common/Button';
 import {TextInput} from '../component/common/TextInput';
 import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
 import {useSettings} from '@src/hooks/settings';
+import {useUserLogin} from '@src/hooks/user';
+import {DialogLib} from '../component/common/DialogLib';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -28,8 +30,10 @@ const loginSchema = Yup.object().shape({
 const Login = () => {
   const {rememberedUser, isRememberPW, onSetRememberPW, onSetcurrentUserInfo} =
     useSettings();
+  const {currentUser} = useUserLogin();
   const dispatch = useDispatch<AppThunkDispatch>();
   const [showPassword, setShowPassword] = useState(true);
+  const [wrongPassword, setWrongPassword] = useState(false);
   const [agreement, setAgreement] = useState<boolean>(isRememberPW);
   const scrollViewRef = useRef<any>();
   const {
@@ -59,17 +63,21 @@ const Login = () => {
   const onSubmit = useCallback(
     async data => {
       console.log('Login screen >>>>>', data);
-      dispatch(
+      const res: any = dispatch(
         UserThunk.postLogin({
           username: user,
           password: password,
         }),
       );
-      onSetRememberPW({rememberPW: agreement});
-      if (agreement) {
-        onSetcurrentUserInfo({currentPW: password, user});
-      } else {
-        onSetcurrentUserInfo({user: '', currentPW: ''});
+      if (res?._j === 'WRONGPASS') {
+        setWrongPassword(true);
+      } else if (res?._j === 'LOGIN') {
+        onSetRememberPW({rememberPW: agreement});
+        if (agreement) {
+          onSetcurrentUserInfo({currentPW: password, user});
+        } else {
+          onSetcurrentUserInfo({user: '', currentPW: ''});
+        }
       }
     },
     [
@@ -85,7 +93,11 @@ const Login = () => {
   const onBlur = useCallback(() => {
     scrollViewRef?.current?.scrollToEnd();
   }, [scrollViewRef]);
-  console.log(showPassword);
+
+  const onCloseModal = useCallback(() => {
+    setWrongPassword(false);
+  }, []);
+
   return (
     <KeyboardAvoidingView undefinedBehavior style={styles.safeView}>
       <Container
@@ -164,6 +176,12 @@ const Login = () => {
             />
           </View>
         </ScrollView>
+        <DialogLib
+          visible={wrongPassword}
+          title={'Đăng nhập'}
+          description={'Tài khoản không tồn tại'}
+          onClose={onCloseModal}
+        />
       </Container>
     </KeyboardAvoidingView>
   );

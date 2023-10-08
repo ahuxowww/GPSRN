@@ -11,7 +11,7 @@ interface FollowState {
 export const useUserLogin = () => {
   const dispatch = useDispatch<AppThunkDispatch>();
 
-  const user = useSelector(
+  const currentUser = useSelector(
     R.pipe(UserRedux.getReducerState, UserRedux.selectors.getUserData),
   );
 
@@ -32,7 +32,7 @@ export const useUserLogin = () => {
 
   return {
     onLogout,
-    user,
+    currentUser,
     followUser,
     onChangeFollowUser,
   };

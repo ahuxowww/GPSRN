@@ -33,12 +33,12 @@ export const DialogLib: FC<ModalProps> = ({
       return (
         <View row spread marginB-16 marginH-24 marginT-8={description}>
           <ButtonText
-            label={'button.cancel'}
+            label={'Cancel'}
             styleText={styles.styleTextButton}
             onPress={onClose}
           />
           <ButtonText
-            label={'button.delete'}
+            label={'Delete'}
             styleText={styles.buttonDeleteDialog}
             onPress={onConfirm}
           />
@@ -48,7 +48,7 @@ export const DialogLib: FC<ModalProps> = ({
       return (
         <View row right marginB-16 marginT-8={description} marginH-24>
           <ButtonText
-            label={'button.OK'}
+            label={'OK'}
             styleText={styles.styleTextButton}
             onPress={onClose}
           />
@@ -65,21 +65,21 @@ export const DialogLib: FC<ModalProps> = ({
       width={'100%'}
       containerStyle={styles.dialogContainer}
       onDismiss={onClose}>
-      <TouchableOpacity flex marginH-24 center onPressOut={onClose}>
+      <TouchableOpacity flex marginH-32 center onPressOut={onClose}>
         <View bg-white spread style={styles.dialogBackground}>
           {imageBackground && (
             <Image source={imageBackground} style={styles.bgImage} />
           )}
           {title && (
             <>
-              <View margin-16>
+              <View marginV-16 marginH-24>
                 <Text h_page_title>{title}</Text>
               </View>
               <View height={2} bg-grey70 />
             </>
           )}
           {description && (
-            <Text h_page_title margin-16>
+            <Text body_regular marginV-16 marginH-24>
               {description}
             </Text>
           )}

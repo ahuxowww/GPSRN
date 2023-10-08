@@ -22,6 +22,7 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "css-select": "^5.1.0",
     "css-tree": "^2.3.1",
+    "date-fns": "^2.30.0",
     "lodash": "^4.17.21",
     "patch-package": "^8.0.0",
     "ramda": "^0.29.0",

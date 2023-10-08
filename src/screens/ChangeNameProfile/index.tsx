@@ -14,7 +14,7 @@ const ChangeNameScreen = () => {
   const {params}: any = useRoute();
   const dispatch = useDispatch<AppThunkDispatch>();
   const navigation = useNavigation();
-  const {user} = useUserLogin();
+  const {currentUser} = useUserLogin();
 
   const [textValue, setTextValue] = useState('');
   const onChangeText = useCallback((value: string) => {
@@ -23,19 +23,19 @@ const ChangeNameScreen = () => {
 
   const onSaveNameText = useCallback(async () => {
     const payloadName = textValue ? {name: textValue} : {};
-    const payloadAvatar = user?.payload?.avatar
-      ? {avatar: user?.payload?.avatar}
+    const payloadAvatar = currentUser?.payload?.avatar
+      ? {avatar: currentUser?.payload?.avatar}
       : {};
     await dispatch(
       UserThunk.postLogin({
-        username: user?.payload?.username,
-        password: user?.payload?.password,
+        username: currentUser?.payload?.username,
+        password: currentUser?.payload?.password,
         ...payloadName,
         ...payloadAvatar,
       }),
     );
     navigation.navigate('CHANGE_PROFILE_SCREEN');
-  }, [dispatch, navigation, textValue, user]);
+  }, [dispatch, navigation, textValue, currentUser]);
 
   const CustomRightIcon: ReactNode = (
     <TouchableOpacity marginR-16 onPress={onSaveNameText}>

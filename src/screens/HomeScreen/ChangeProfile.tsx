@@ -27,7 +27,7 @@ const avatarState = [
 const ChangeProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppThunkDispatch>();
-  const {user} = useUserLogin();
+  const {currentUser} = useUserLogin();
   const [isVisible, setVisible] = useState(false);
 
   const onNavToVehicle = useCallback(() => {
@@ -41,13 +41,13 @@ const ChangeProfileScreen = () => {
   const onSaveAvatar = useCallback(
     async (avatar: string) => {
       const payloadAvatar = avatar ? {avatar: avatar} : {};
-      const payloadName = user?.payload?.name
-        ? {avatar: user?.payload?.name}
+      const payloadName = currentUser?.payload?.name
+        ? {avatar: currentUser?.payload?.name}
         : {};
       await dispatch(
         UserThunk.postLogin({
-          username: user?.payload?.username,
-          password: user?.payload?.password,
+          username: currentUser?.payload?.username,
+          password: currentUser?.payload?.password,
           ...payloadName,
           ...payloadAvatar,
         }),
@@ -55,9 +55,9 @@ const ChangeProfileScreen = () => {
     },
     [
       dispatch,
-      user?.payload?.name,
-      user?.payload?.password,
-      user?.payload?.username,
+      currentUser?.payload?.name,
+      currentUser?.payload?.password,
+      currentUser?.payload?.username,
     ],
   );
 
