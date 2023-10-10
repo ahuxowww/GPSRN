@@ -1,103 +1,145 @@
-import React from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
-import MainTitle from '../component/MainTitle';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Image, ScrollView, StyleSheet, PermissionsAndroid} from 'react-native';
 import Container from '../component/Container';
-import {Colors} from '../../assets';
-import {View} from 'react-native-ui-lib';
+import {GGMap} from './component/GGMap';
+import {Marker} from './component/Marker';
+import {Colors, Images, Metrics, Svgs} from '../../assets';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
+import MainTitle from '../component/MainTitle';
+import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
 
 const EventRegistration = () => {
-  const mockData = {
-    value: 30,
-    total: 2156,
-    safe: true,
-    moreSafe: 5,
-  };
-  let valueSpeed = mockData?.value.toString();
-  if (valueSpeed.length === 1) {
-    valueSpeed = '00' + valueSpeed;
-  } else if (valueSpeed.length === 2) {
-    valueSpeed = '0' + valueSpeed;
-  }
+
+  const [bottomMapDialog, setBottomMapDialog] = useState(false);
+  // const { userMapName } = useUserProfile();
+
+  const renderMap = useCallback(() => {
+    const data = {
+      location: {
+        lat: 21.035688,
+        lon: 105.851564,
+      },
+    };
+    return (
+      <GGMap data={data}>
+        {/* <Marker
+          isGGMap
+          data={{
+            location: {
+              lat: 21.035688,
+              lon: 105.851564,
+            },
+          }}
+        /> */}
+      </GGMap>
+    );
+  }, []);
+
+  const onOpenBottomDetail = useCallback(() => {
+    setBottomMapDialog(true);
+  }, []);
+  const onCloseBottomDetail = useCallback(() => {
+    setBottomMapDialog(false);
+  }, []);
+  const ITEM_LENGTH = Metrics.screen.width - 60;
+
+  const getItemLayout = React.useCallback(
+    (_data: any, index: number) => ({
+      length: ITEM_LENGTH,
+      offset: ITEM_LENGTH * index,
+      index,
+    }),
+    [ITEM_LENGTH],
+  );
+
+  const renderItem = useCallback(
+    ({item, index}: {item: any; index: number}) => {
+      return (
+        <View style={styles.itemJourney}>
+          <View row style={{justifyContent: 'space-between'}}>
+            <View flex>
+              <Text h2 color={Colors.white}>
+                {item.title}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={onCloseBottomDetail}>
+              <Svgs.Close width={24} height={24} fill={Colors.white} />
+            </TouchableOpacity>
+          </View>
+          <View center row marginT-12>
+            <Text
+              h1
+              color={
+                item?.color
+                  ? item?.color === 'green'
+                    ? Colors.greenSpringBud
+                    : Colors.redAlizarin
+                  : Colors.white
+              }>
+              {item?.value} {item?.type}
+            </Text>
+          </View>
+        </View>
+      );
+    },
+    [],
+  );
 
   return (
     <Container
       safeBottom
       backgroundColor={Colors.blueDarkTurquoise}
       backgroundBody={Colors.yellowHalfDutchWhite}>
-      <MainTitle marginH-24 title="Tình trạng kiểm soát" />
-      <ScrollView>
-        <Text
-          marginT-40
-          marginB-16
-          marginH-24
-          h_page_title
-          color={Colors.greyNightRider71}>
-          Vận tốc của xe
-        </Text>
-        <View row center>
-          {valueSpeed.split('').map((value, index) => {
-            return <></>;
-          })}
-        </View>
-        <View
-          marginT-24
-          marginH-24
-          row
-          style={{justifyContent: 'space-between'}}>
-          <View>
-            <Text marginB-8 body_bold color={Colors.greyNightRider71}>
-              Đồng hồ đo quãng đường
-            </Text>
-            <View row style={{alignItems: 'flex-end'}}>
-              {mockData?.total
-                .toString()
-                .split('')
-                .map((value, index) => {
-                  return <></>;
-                })}
-              <Text marginB-4 color={Colors.blueNavy}>
-                KM
-              </Text>
-            </View>
+      <MainTitle marginH-24 title="Hành trình" />
+      <ScrollView style={{flex: 1}}>
+        {renderMap()}
+        {bottomMapDialog && (
+          <View style={styles.position}>
+            {/* <Carousel
+              disableIntervalMomentum
+              // ref={refCarousel}
+              data={mockData}
+              itemWidth={Metrics.screen.width - 60}
+              renderItem={renderItem}
+              sliderWidth={Metrics.screen.width}
+              slideStyle={{height: 200, justifyContent: 'flex-end'}}
+              getItemLayout={getItemLayout}
+              initialNumToRender={5}
+              windowSize={5} // lazyload only render prev and next item ( should equal to initialNumToRender )
+              containerCustomStyle={{flexGrow: 0}}
+              style={styles.position}
+            /> */}
           </View>
-          <Text h1 style={{alignItems: 'center'}} color={Colors.blueNavy}>
-            KM/H
-          </Text>
-        </View>
-        <View marginH-24 marginT-16>
-          <Text body_bold color={Colors.greyNightRider71}>
-            Tình trạng của xe
-          </Text>
-          <Text
-            marginT-8
-            body_regular
-            color={mockData.safe ? Colors.greenPigment : Colors.redAlizarin}>
-            {mockData.safe ? 'AN TOÀN' : 'NGUY HIỂM'}
-          </Text>
-        </View>
-        <View marginH-24 marginT-16 row centerV>
-          <Text body_bold color={Colors.greyNightRider71}>
-            Số lần vượt quá tốc độ trong ngày :
-          </Text>
-          <Text body_regular greyNightRider>
-            {' '}
-            {mockData.moreSafe}
-          </Text>
-        </View>
+        )}
       </ScrollView>
     </Container>
   );
 };
 
+export default EventRegistration;
+
 const styles = StyleSheet.create({
-  avatar: {
-    height: 52,
-    width: 52,
-    borderRadius: 26,
-    borderWidth: 1,
-    borderColor: Colors.greyNightRider57,
+  container: {
+    flexGrow: 1,
+  },
+  infoWrapper: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+  },
+  position: {
+    position: 'absolute',
+    bottom: 20,
+  },
+  image: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+  },
+  itemJourney: {
+    height: 200,
+    backgroundColor: Colors.blueDarkTurquoise,
+    borderRadius: 16,
+    padding: 16,
   },
 });
-
-export default EventRegistration;

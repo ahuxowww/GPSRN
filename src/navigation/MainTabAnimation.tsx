@@ -52,7 +52,7 @@ const MainTabAnimation = () => {
           tabBarButton: props => (
             <AnimatedTabIcon
               targetScreen={'NOTIFICATION'}
-              title={'Cảnh báo'}
+              title={'Hành trình'}
               active={props.accessibilityState?.selected}
             />
           ),
