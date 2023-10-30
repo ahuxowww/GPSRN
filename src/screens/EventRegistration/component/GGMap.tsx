@@ -307,37 +307,36 @@ export const GGMap = (props: GGMapProps) => {
       },
     ],
   ];
-
-  // const renderStartMarker = () =>
-  //   currentJourney.startJourneyPoint && (
-  //     <Marker
-  //       // key={`start_point_${coordToKey(
-  //       //   currentJourney.startJourneyPoint.coords,
-  //       // )}_${journeyData?.transportationMethod}`}
-  //       anchor={{
-  //         x: 0.5,
-  //         y: 0.5,
-  //       }}
-  //       tracksViewChanges={false} // improve performance when change carousel item
-  //       coordinate={currentJourney.startJourneyPoint.coords}>
-  //       <Svgs.StartPoint height={15} width={15} />
-  //     </Marker>
-  //   );
-  // const renderLastMarker = () =>
-  //   currentJourney.lastJourneyPoint && (
-  //     <Marker
-  //       // key={`last_point_${coordToKey(
-  //       //   currentJourney.lastJourneyPoint.coords,
-  //       // )}_${journeyData?.transportationMethod}`}
-  //       anchor={{
-  //         x: 0.5,
-  //         y: 0.5,
-  //       }}
-  //       tracksViewChanges={false} // improve performance when change carousel item
-  //       coordinate={currentJourney.lastJourneyPoint.coords}>
-  //       <Svgs.FinishPoint height={15} width={15} fill={Colors.black} />
-  //     </Marker>
-  //   );
+  const renderStartMarker = () =>
+    mockData[0][0] && (
+      <Marker
+        // key={`start_point_${coordToKey(
+        //   currentJourney.startJourneyPoint.coords,
+        // )}_${journeyData?.transportationMethod}`}
+        anchor={{
+          x: 0.5,
+          y: 0.5,
+        }}
+        tracksViewChanges={false} // improve performance when change carousel item
+        coordinate={mockData[0][0]}>
+        <Svgs.StartPoint height={15} width={15} fill={Colors.black} />
+      </Marker>
+    );
+  const renderLastMarker = () =>
+    mockData[0][mockData.length - 1] && (
+      <Marker
+        // key={`last_point_${coordToKey(
+        //   currentJourney.lastJourneyPoint.coords,
+        // )}_${journeyData?.transportationMethod}`}
+        anchor={{
+          x: 0.5,
+          y: 0.5,
+        }}
+        tracksViewChanges={false} // improve performance when change carousel item
+        coordinate={mockData[0][mockData.length - 1]}>
+        <Svgs.FinishPoint height={15} width={15} fill={Colors.black} />
+      </Marker>
+    );
 
   const renderLines = (lines: LineCoord[][], isLossGPS?: boolean) => {
     return (
@@ -362,13 +361,17 @@ export const GGMap = (props: GGMapProps) => {
     );
   };
 
-  const Lastregion: Region = {
+  const LastRegion: Region = {
     ...mockData[0][mockData[0].length - 1],
-    latitudeDelta: 0.03,
-    longitudeDelta: 0.03,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
   };
 
-  mapRef.current?.animateToRegion(Lastregion);
+  useEffect(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 1000);
+  }, [LastRegion]);
 
   return (
     <View style={styles.container}>
@@ -384,9 +387,10 @@ export const GGMap = (props: GGMapProps) => {
         rotateEnabled
         showsMyLocationButton
         showsIndoorLevelPicker
-        pitchEnabled
-        zoomControlEnabled>
+        pitchEnabled>
         {renderLines(mockData)}
+        {renderStartMarker()}
+        {renderLastMarker()}
       </MapView>
     </View>
   );
@@ -394,7 +398,7 @@ export const GGMap = (props: GGMapProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: Metrics.screen.height / 1.18,
+    height: Metrics.screen.height - 100,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

@@ -76,12 +76,14 @@ export const GGMap = (props: GGMapProps) => {
       ]);
     Geolocation.getCurrentPosition(
       position => {
-        mapRef.current?.animateToRegion({
-          latitude: position?.coords?.latitude ?? 0,
-          longitude: position?.coords?.longitude ?? 0,
-          latitudeDelta: 0.009,
-          longitudeDelta: 0.009,
-        });
+        setTimeout(() => {
+          mapRef.current?.animateToRegion({
+            latitude: position?.coords?.latitude ?? 0,
+            longitude: position?.coords?.longitude ?? 0,
+            latitudeDelta: 0.009,
+            longitudeDelta: 0.009,
+          });
+        }, 100);
       },
       error => {
         // See error code charts below.
