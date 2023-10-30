@@ -1,9 +1,10 @@
 import React, {useRef, ReactNode, useEffect, useState} from 'react';
-import {StyleSheet, PermissionsAndroid} from 'react-native';
-import {View} from 'react-native-ui-lib';
+import {StyleSheet, PermissionsAndroid, Touchable} from 'react-native';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MapView, {Marker, PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import {Colors, Metrics, Svgs} from '../../../assets';
 import {LineCoord} from '@src/screens/Announcement/component/inteface';
+import {useCallback} from 'react';
 
 interface GGMapProps {
   onPress?: (feature: any) => void;
@@ -373,6 +374,12 @@ export const GGMap = (props: GGMapProps) => {
     }, 1000);
   }, [LastRegion]);
 
+  const onFocusLocation = useCallback(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 1000);
+  }, [LastRegion]);
+
   return (
     <View style={styles.container}>
       <MapView
@@ -392,6 +399,12 @@ export const GGMap = (props: GGMapProps) => {
         {renderStartMarker()}
         {renderLastMarker()}
       </MapView>
+      <TouchableOpacity
+        onPress={onFocusLocation}
+        center
+        style={styles.buttonDirection}>
+        <Svgs.FocusLocation width={32} height={32} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -402,5 +415,14 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  buttonDirection: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    height: 40,
+    width: 40,
+    position: 'absolute',
+    bottom: Metrics.screen.height / 2,
+    right: 20,
   },
 });
