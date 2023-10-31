@@ -7,12 +7,13 @@ import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
 import {useUserLogin} from '@src/hooks/user';
-import {useDispatch} from 'react-redux';
-import {AppThunkDispatch} from '@src/redux/common';
-import {UserThunk} from '@src/redux/thunks';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {BottomDialog} from '../component/common/BottomDialog';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {firebase} from '@src/config/firebaseconfig';
+import {actions} from '@src/redux/user/UserActions';
+import {useDispatch} from 'react-redux';
+import {AppThunkDispatch} from '@src/redux/common';
 
 const avatarState = [
   {
@@ -26,8 +27,7 @@ const avatarState = [
 ];
 const ChangeProfileScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch<AppThunkDispatch>();
-  const {currentUser} = useUserLogin();
+  const {userData} = useUserLogin();
   const [isVisible, setVisible] = useState(false);
 
   const onNavToVehicle = useCallback(() => {
@@ -38,27 +38,35 @@ const ChangeProfileScreen = () => {
     navigation.navigate('CHANGE_NAME_PROFILE_SCREEN');
   }, [navigation]);
 
+  const dispatch = useDispatch<AppThunkDispatch>();
+
   const onSaveAvatar = useCallback(
     async (avatar: string) => {
-      const payloadAvatar = avatar ? {avatar: avatar} : {};
-      const payloadName = currentUser?.payload?.name
-        ? {avatar: currentUser?.payload?.name}
-        : {};
-      await dispatch(
-        UserThunk.postLogin({
-          username: currentUser?.payload?.username,
-          password: currentUser?.payload?.password,
-          ...payloadName,
-          ...payloadAvatar,
-        }),
-      );
+      if (!userData) {
+        return;
+      }
+      await firebase.firestore().collection('user').doc(userData.id).update({
+        uri: avatar,
+      });
+
+      firebase
+        .firestore()
+        .collection('user')
+        .get()
+        .then(result => result.docs)
+        .then(docs =>
+          docs.map(doc => ({
+            id: doc.id,
+            username: doc.data().username,
+            uri: doc.data().uri,
+            method: doc.data().method,
+          })),
+        )
+        .then(data => {
+          dispatch(actions.saveUserData({userData: data[0]}));
+        });
     },
-    [
-      dispatch,
-      currentUser?.payload?.name,
-      currentUser?.payload?.password,
-      currentUser?.payload?.username,
-    ],
+    [dispatch, userData],
   );
 
   const onOpenModal = useCallback(() => {

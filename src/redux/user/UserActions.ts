@@ -11,10 +11,15 @@ const saveFolowUser = createAction(typePrefixFormat('saveFolowUser'))<{
   followUser: boolean;
 }>();
 
+const saveUserData = createAction(typePrefixFormat('saveUserData'))<{
+  userData: any;
+}>();
+
 const logout = createAction(typePrefixFormat('logout'))();
 
 export const actions = {
   logout,
   saveUser,
   saveFolowUser,
+  saveUserData
 };

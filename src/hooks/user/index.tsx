@@ -19,6 +19,10 @@ export const useUserLogin = () => {
     R.pipe(UserRedux.getReducerState, UserRedux.selectors.getFollowUser),
   );
 
+  const userData = useSelector(
+    R.pipe(UserRedux.getReducerState, UserRedux.selectors.getUserDatabase),
+  );
+
   const onChangeFollowUser = React.useCallback(
     (payload: FollowState) => {
       dispatch(actions.saveFolowUser(payload));
@@ -35,5 +39,6 @@ export const useUserLogin = () => {
     currentUser,
     followUser,
     onChangeFollowUser,
+    userData
   };
 };

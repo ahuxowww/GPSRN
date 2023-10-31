@@ -28,19 +28,7 @@ const Map = () => {
         lon: 105.851564,
       },
     };
-    return (
-      <GGMap data={data}>
-        {/* <Marker
-          isGGMap
-          data={{
-            location: {
-              lat: 21.035688,
-              lon: 105.851564,
-            },
-          }}
-        /> */}
-      </GGMap>
-    );
+    return <GGMap data={data}></GGMap>;
   }, []);
 
   const mockData = [

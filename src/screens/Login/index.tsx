@@ -17,6 +17,12 @@ import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
 import {useSettings} from '@src/hooks/settings';
 import {useUserLogin} from '@src/hooks/user';
 import {DialogLib} from '../component/common/DialogLib';
+import {FIREBASE_AUTH} from '@src/config/firebaseconfig';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import {actions} from '@src/redux/user/UserActions';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -36,6 +42,7 @@ const Login = () => {
   const [wrongPassword, setWrongPassword] = useState(false);
   const [agreement, setAgreement] = useState<boolean>(isRememberPW);
   const scrollViewRef = useRef<any>();
+  const auth = FIREBASE_AUTH;
   const {
     control,
     formState: {errors},
@@ -50,7 +57,6 @@ const Login = () => {
   });
   const user = watch('user');
   const password = watch('password');
-
   const onAgreement = useCallback((value: boolean) => {
     setAgreement(value);
   }, []);
@@ -60,18 +66,17 @@ const Login = () => {
     setShowPassword(!showPassword);
   }, [showPassword]);
 
-  const onSubmit = useCallback(
-    async data => {
-      console.log('Login screen >>>>>', data);
-      const res: any = dispatch(
-        UserThunk.postLogin({
-          username: user,
-          password: password,
-        }),
-      );
-      if (res?._j === 'WRONGPASS') {
-        setWrongPassword(true);
-      } else if (res?._j === 'LOGIN') {
+  const signIn = useCallback(async () => {
+    try {
+      const res = await signInWithEmailAndPassword(auth, user, password);
+      if (res) {
+        dispatch(
+          actions.saveUser({
+            user: {
+              type: 'LOGIN',
+            },
+          }),
+        );
         onSetRememberPW({rememberPW: agreement});
         if (agreement) {
           onSetcurrentUserInfo({currentPW: password, user});
@@ -79,15 +84,32 @@ const Login = () => {
           onSetcurrentUserInfo({user: '', currentPW: ''});
         }
       }
+    } catch (e) {
+      setWrongPassword(true);
+    }
+  }, [
+    agreement,
+    auth,
+    dispatch,
+    onSetRememberPW,
+    onSetcurrentUserInfo,
+    password,
+    user,
+  ]);
+
+  const signUp = useCallback(async () => {
+    try {
+      const res = await createUserWithEmailAndPassword(auth, user, password);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [auth, password, user]);
+
+  const onSubmit = useCallback(
+    async data => {
+      signIn();
     },
-    [
-      agreement,
-      dispatch,
-      onSetRememberPW,
-      onSetcurrentUserInfo,
-      password,
-      user,
-    ],
+    [signIn],
   );
 
   const onBlur = useCallback(() => {

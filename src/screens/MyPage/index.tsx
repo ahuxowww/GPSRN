@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet} from 'react-native';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
@@ -11,20 +11,20 @@ import {UserThunk} from '@src/redux/thunks';
 import {useDispatch} from 'react-redux';
 import {AppThunkDispatch} from '@src/redux/common';
 import {useUserLogin} from '@src/hooks/user';
+import {firebase} from '@src/config/firebaseconfig';
+import {actions} from '@src/redux/user/UserActions';
 
 const MyPageScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppThunkDispatch>();
-  const {user, followUser, onChangeFollowUser} = useUserLogin();
-
+  const {followUser, onChangeFollowUser} = useUserLogin();
+  const {userData} = useUserLogin();
+console.log(userData)
   const onChangeSwitch = useCallback(async () => {
     await onChangeFollowUser({followUser: followUser ? !followUser : true});
   }, [followUser, onChangeFollowUser]);
 
   const mockData = {
-    avatar:
-      'https://cdn.popsww.com/blog/sites/2/2022/02/demon-slayer-nezuko.jpg',
-    name: 'Kimm moo chee',
     times: 12,
     total: 3.2,
   };
@@ -54,16 +54,9 @@ const MyPageScreen = () => {
             paddingH-24
             paddingV-12>
             <View row centerV>
-              <Image
-                source={
-                  user?.payload?.avatar
-                    ? {uri: user?.payload?.avatar}
-                    : {uri: mockData.avatar}
-                }
-                style={styles.avatar}
-              />
+              <Image source={{uri: userData?.uri}} style={styles.avatar} />
               <Text marginL-24 h_page_title>
-                {user?.payload?.name ?? mockData?.name}
+                {userData?.username}
               </Text>
             </View>
             <TouchableOpacity onPress={onNavToProfile}>

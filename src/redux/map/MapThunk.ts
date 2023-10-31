@@ -5,7 +5,6 @@ export const changeDistance =
   (payload?: any): AppThunk =>
   async (dispatch, _appState) => {
     try {
-      console.log(payload)
       await dispatch(
         actions.saveDistance({
           distance: payload,

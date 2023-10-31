@@ -1,6 +1,10 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 
+// background-geolocation
+Project background_geolocation = project(':react-native-background-geolocation')
+apply from: "${background_geolocation.projectDir}/app.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -128,6 +132,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
         }
     }
 

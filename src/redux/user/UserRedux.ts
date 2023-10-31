@@ -9,12 +9,14 @@ const stateKey = 'user';
 export interface AppState {
   user: any;
   followUser: boolean;
+  userData: any;
 }
 
 /* ------------- Initial State ------------- */
 const INITIAL_STATE: AppState = {
-  user: false,
+  user: undefined,
   followUser: false,
+  userData: undefined,
 };
 
 /* ------------- Reducers ------------- */
@@ -35,10 +37,19 @@ const saveFolowUser = (
   followUser: followUser,
 });
 
+const saveUserData = (
+  state: AppState,
+  {payload: {userData}}: ReturnType<typeof actions.saveUserData>,
+) => ({
+  ...state,
+  userData: userData,
+});
+
 /* ------------- Hookup Reducers To Types ------------- */
 const reducer = createReducer(INITIAL_STATE, {
   [getType(actions.saveUser)]: saveUser,
   [getType(actions.saveFolowUser)]: saveFolowUser,
+  [getType(actions.saveUserData)]: saveUserData,
 });
 
 const persistConfig = {
@@ -55,6 +66,7 @@ const getReducerState = (state: any): AppState => state[stateKey];
 const selectors = {
   getUserData: ({user}: AppState) => user,
   getFollowUser: ({followUser}: AppState) => followUser,
+  getUserDatabase: ({userData}: AppState) => userData,
 };
 
 /* ------------- Export ------------- */

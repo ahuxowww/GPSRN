@@ -3,18 +3,18 @@ import {Colors, Svgs} from '../../assets';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
 import Input from '../component/common/Input';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-ui-lib';
-import {UserThunk} from '@src/redux/thunks';
+import {useUserLogin} from '@src/hooks/user';
+import {firebase} from '@src/config/firebaseconfig';
+import {actions} from '@src/redux/user/UserActions';
 import {useDispatch} from 'react-redux';
 import {AppThunkDispatch} from '@src/redux/common';
-import {useUserLogin} from '@src/hooks/user';
 
 const ChangeNameScreen = () => {
-  const {params}: any = useRoute();
-  const dispatch = useDispatch<AppThunkDispatch>();
   const navigation = useNavigation();
-  const {currentUser} = useUserLogin();
+  const {userData} = useUserLogin();
+  const dispatch = useDispatch<AppThunkDispatch>();
 
   const [textValue, setTextValue] = useState('');
   const onChangeText = useCallback((value: string) => {
@@ -22,20 +22,33 @@ const ChangeNameScreen = () => {
   }, []);
 
   const onSaveNameText = useCallback(async () => {
-    const payloadName = textValue ? {name: textValue} : {};
-    const payloadAvatar = currentUser?.payload?.avatar
-      ? {avatar: currentUser?.payload?.avatar}
-      : {};
-    await dispatch(
-      UserThunk.postLogin({
-        username: currentUser?.payload?.username,
-        password: currentUser?.payload?.password,
-        ...payloadName,
-        ...payloadAvatar,
-      }),
-    );
+    if (!userData) {
+      return;
+    }
+
+    await firebase.firestore().collection('user').doc(userData.id).update({
+      username: textValue,
+    });
+
+    firebase
+      .firestore()
+      .collection('user')
+      .get()
+      .then(result => result.docs)
+      .then(docs =>
+        docs.map(doc => ({
+          id: doc.id,
+          username: doc.data().username,
+          uri: doc.data().uri,
+          method: doc.data().method,
+        })),
+      )
+      .then(data => {
+        dispatch(actions.saveUserData({userData: data[0]}));
+      });
+
     navigation.navigate('CHANGE_PROFILE_SCREEN');
-  }, [dispatch, navigation, textValue, currentUser]);
+  }, [userData, textValue, navigation, dispatch]);
 
   const CustomRightIcon: ReactNode = (
     <TouchableOpacity marginR-16 onPress={onSaveNameText}>

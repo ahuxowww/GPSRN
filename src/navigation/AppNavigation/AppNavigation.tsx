@@ -11,17 +11,19 @@ import {useVehicle} from '@src/hooks/vehicle';
 import ChangeNameScreen from '@src/screens/ChangeNameProfile';
 import {useDispatch} from 'react-redux';
 import {AppThunkDispatch} from '@src/redux/common';
-import {onValue, ref, set} from 'firebase/database';
-import {db} from '../../../configs';
+import {onValue, ref} from 'firebase/database';
 import {actions} from '@src/redux/location/LocationActions';
+import {actions as userActions} from '@src/redux/user/UserActions';
+
+import {FIREBASE_STORE, db} from '@src/config/firebaseconfig';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
   const {currentUser} = useUserLogin();
   const {getVehicle} = useVehicle();
   const isLogin = currentUser?.type === 'LOGIN';
-
   const dispatch = useDispatch<AppThunkDispatch>();
+
   React.useEffect(() => {
     const starCountRef = ref(db, 'GPS/');
 
@@ -34,6 +36,23 @@ const AppNavigation: React.FC = () => {
       dispatch(actions.onSetLatitude(data?.f_latitude ?? 0));
       dispatch(actions.onSetLongitude(data?.f_longitude ?? 0));
     });
+  }, [dispatch]);
+
+  React.useEffect(() => {
+    FIREBASE_STORE.collection('user')
+      .get()
+      .then(result => result.docs)
+      .then(docs =>
+        docs.map(doc => ({
+          id: doc.id,
+          username: doc.data().username,
+          uri: doc.data().uri,
+          method: doc.data().method, 
+        })),
+      )
+      .then(data => {
+        dispatch(userActions.saveUserData({userData: data[0]}));
+      });
   }, [dispatch]);
 
   return (
