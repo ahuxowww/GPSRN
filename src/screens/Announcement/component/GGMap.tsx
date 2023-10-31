@@ -1,15 +1,12 @@
-import React, {useRef, ReactNode, useEffect, useState} from 'react';
-import {StyleSheet, PermissionsAndroid, InteractionManager} from 'react-native';
-import {View} from 'react-native-ui-lib';
+import React, {useRef, ReactNode, useEffect, useState, useCallback} from 'react';
+import {StyleSheet, PermissionsAndroid} from 'react-native';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import {Colors, Metrics} from '../../../assets';
-import Geolocation from 'react-native-geolocation-service';
-import {calculateDistance} from '@src/domain/map';
+import {Colors, Metrics, Svgs} from '../../../assets';
 import {Marker} from './Marker';
 import {useVehicle} from '@src/hooks/vehicle';
 import {format} from 'date-fns';
-import {useConnectMap} from '@src/hooks/map';
-import {useUserLogin} from '@src/hooks/user';
+
 
 interface GGMapProps {
   onPress?: (feature: any) => void;
@@ -25,17 +22,6 @@ interface GGMapProps {
 
 export const GGMap = (props: GGMapProps) => {
   const {onPress} = props;
-  const {followUser} = useUserLogin();
-
-  const {
-    getSpeed,
-    getDateMap,
-    getDistance,
-    onChangeDateMap,
-    onChangeStateMap,
-    onChangeSpeedMap,
-    onChangeDistanceMap,
-  } = useConnectMap();
 
   const [previousPosition, setPreviousPosition] = useState<any | null>(null);
   const mapRef = useRef<any>(null);
@@ -44,19 +30,7 @@ export const GGMap = (props: GGMapProps) => {
     scrollEnabled: true,
   };
 
-  useEffect(() => {
-    if (getDateMap) {
-      if (
-        format(new Date(getDateMap), 'yyyy-MM-dd') !==
-        format(new Date(), 'yyyy-MM-dd')
-      ) {
-        onChangeDateMap({date: new Date()});
-        onChangeDistanceMap({distance: 0});
-        onChangeSpeedMap({speed: 0});
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getDateMap]);
+  const onFocusLocation = useCallback(() => {}, []);
 
   return (
     <View style={styles.container}>
@@ -86,15 +60,41 @@ export const GGMap = (props: GGMapProps) => {
           }}
         />
       </MapView>
+      <View style={styles.buttonPosition}>
+        <TouchableOpacity
+          style={styles.buttonIcon}
+          onPress={onFocusLocation}
+          center>
+          <Svgs.FocusLocation width={32} height={32} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          marginT-24
+          style={styles.buttonIcon}
+          onPress={onFocusLocation}
+          center>
+          <Svgs.Directions width={32} height={32} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: Metrics.screen.height - 125,
+    height: Metrics.screen.height - 100,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  buttonPosition: {
+    position: 'absolute',
+    bottom: Metrics.screen.height / 2,
+    right: 20,
+  },
+  buttonIcon: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    height: 40,
+    width: 40,
   },
 });

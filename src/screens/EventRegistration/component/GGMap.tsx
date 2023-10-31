@@ -1,9 +1,10 @@
 import React, {useRef, ReactNode, useEffect, useState} from 'react';
-import {StyleSheet, PermissionsAndroid} from 'react-native';
-import {View} from 'react-native-ui-lib';
+import {StyleSheet, PermissionsAndroid, Touchable} from 'react-native';
+import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MapView, {Marker, PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import {Colors, Metrics, Svgs} from '../../../assets';
 import {LineCoord} from '@src/screens/Announcement/component/inteface';
+import {useCallback} from 'react';
 
 interface GGMapProps {
   onPress?: (feature: any) => void;
@@ -375,11 +376,8 @@ export const GGMap = (props: GGMapProps) => {
       },
     ],
   ];
-
-  const startJourneyPoint = mockData[0][0];
-  const lastJourneyPoint = mockData[0][mockData[0].length - 1];
   const renderStartMarker = () =>
-    startJourneyPoint && (
+    mockData[0][0] && (
       <Marker
         // key={`start_point_${coordToKey(
         //   currentJourney.startJourneyPoint.coords,
@@ -389,12 +387,12 @@ export const GGMap = (props: GGMapProps) => {
           y: 0.5,
         }}
         tracksViewChanges={false} // improve performance when change carousel item
-        coordinate={startJourneyPoint}>
-        <Svgs.StartPoint height={15} width={15} />
+        coordinate={mockData[0][0]}>
+        <Svgs.StartPoint height={15} width={15} fill={Colors.black} />
       </Marker>
     );
   const renderLastMarker = () =>
-    lastJourneyPoint && (
+    mockData[0][mockData.length - 1] && (
       <Marker
         // key={`last_point_${coordToKey(
         //   currentJourney.lastJourneyPoint.coords,
@@ -404,7 +402,7 @@ export const GGMap = (props: GGMapProps) => {
           y: 0.5,
         }}
         tracksViewChanges={false} // improve performance when change carousel item
-        coordinate={lastJourneyPoint}>
+        coordinate={mockData[0][mockData.length - 1]}>
         <Svgs.FinishPoint height={15} width={15} fill={Colors.black} />
       </Marker>
     );
@@ -431,15 +429,23 @@ export const GGMap = (props: GGMapProps) => {
     );
   };
 
-  useEffect(() => {
-    const Lastregion: Region = {
-      ...mockData[0][mockData[0].length - 1],
-      latitudeDelta: 0.025,
-      longitudeDelta: 0.025,
-    };
+  const LastRegion: Region = {
+    ...mockData[0][mockData[0].length - 1],
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  };
 
-    mapRef.current?.animateToRegion(Lastregion);
-  }, [mockData]);
+  useEffect(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 1000);
+  }, [LastRegion]);
+
+  const onFocusLocation = useCallback(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 1000);
+  }, [LastRegion]);
 
   return (
     <View style={styles.container}>
@@ -456,22 +462,35 @@ export const GGMap = (props: GGMapProps) => {
         rotateEnabled
         showsMyLocationButton
         showsIndoorLevelPicker
-        pitchEnabled
-        zoomControlEnabled
-        maxZoomLevel={16}>
+        pitchEnabled>
         {renderLines(mockData)}
         {renderStartMarker()}
         {renderLastMarker()}
       </MapView>
+      <TouchableOpacity
+        onPress={onFocusLocation}
+        center
+        style={styles.buttonDirection}>
+        <Svgs.FocusLocation width={32} height={32} />
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: Metrics.screen.height - 125,
+    height: Metrics.screen.height - 100,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  buttonDirection: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    height: 40,
+    width: 40,
+    position: 'absolute',
+    bottom: Metrics.screen.height / 2,
+    right: 20,
   },
 });
