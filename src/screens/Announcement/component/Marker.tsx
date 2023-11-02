@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
   },
 });

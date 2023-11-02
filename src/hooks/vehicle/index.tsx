@@ -14,7 +14,6 @@ export const useVehicle = () => {
 
   const onChangeVehicle = React.useCallback(
     (payload: {vehicle: string}) => {
-      console.log(payload);
       dispatch(actions.saveVehicle(payload));
     },
     [dispatch],

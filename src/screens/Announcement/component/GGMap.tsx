@@ -48,13 +48,13 @@ export const GGMap = (props: GGMapProps) => {
   const LastRegion: Region = {
     latitude: location?.f_latitude ?? 0,
     longitude: location?.f_longitude ?? 0,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
   };
-  console.log(location);
+
   useEffect(() => {
     setTimeout(() => {
-      mapRef.current?.animateToRegion(LastRegion, 1000);
+      mapRef.current?.animateToRegion(LastRegion, 0);
     }, 100);
   }, []);
 

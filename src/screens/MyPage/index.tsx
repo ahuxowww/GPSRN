@@ -11,15 +11,13 @@ import {UserThunk} from '@src/redux/thunks';
 import {useDispatch} from 'react-redux';
 import {AppThunkDispatch} from '@src/redux/common';
 import {useUserLogin} from '@src/hooks/user';
-import {firebase} from '@src/config/firebaseconfig';
-import {actions} from '@src/redux/user/UserActions';
 
 const MyPageScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppThunkDispatch>();
   const {followUser, onChangeFollowUser} = useUserLogin();
   const {userData} = useUserLogin();
-console.log(userData)
+
   const onChangeSwitch = useCallback(async () => {
     await onChangeFollowUser({followUser: followUser ? !followUser : true});
   }, [followUser, onChangeFollowUser]);

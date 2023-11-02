@@ -227,7 +227,6 @@ export class GeolocationService {
         persist: false,
         ...options,
       });
-      console.log({location});
       if (location) {
         this.currentLocation = location as unknown as GeoLocation;
         location.activity = this.correctActivityType(location.activity);
