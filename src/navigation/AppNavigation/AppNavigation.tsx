@@ -14,8 +14,7 @@ import {AppThunkDispatch} from '@src/redux/common';
 import {onValue, ref} from 'firebase/database';
 import {actions} from '@src/redux/location/LocationActions';
 import {actions as userActions} from '@src/redux/user/UserActions';
-
-import {FIREBASE_STORE, db} from '@src/config/firebaseconfig';
+import {db, firebase} from '@src/config/firebaseconfig';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -29,17 +28,14 @@ const AppNavigation: React.FC = () => {
 
     onValue(starCountRef, snapshot => {
       const data = snapshot.val();
-      // const newPosts = Object.keys(data).map(key => ({
-      //   id: key,
-      //   ...data[key],
-      // }));
-      dispatch(actions.onSetLatitude(data?.f_latitude ?? 0));
-      dispatch(actions.onSetLongitude(data?.f_longitude ?? 0));
+      dispatch(actions.onSetLocation({location: data}));
     });
   }, [dispatch]);
 
   React.useEffect(() => {
-    FIREBASE_STORE.collection('user')
+    firebase
+      .firestore()
+      .collection('user')
       .get()
       .then(result => result.docs)
       .then(docs =>
@@ -47,7 +43,7 @@ const AppNavigation: React.FC = () => {
           id: doc.id,
           username: doc.data().username,
           uri: doc.data().uri,
-          method: doc.data().method, 
+          method: doc.data().method,
         })),
       )
       .then(data => {

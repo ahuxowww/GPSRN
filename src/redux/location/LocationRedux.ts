@@ -8,35 +8,26 @@ import {GeoLocation} from '@src/domain/map/type';
 export const stateKey = 'location';
 
 export interface LocationState {
-  lat: number;
-  lon: number;
+  location: any;
   userCurrentLocation?: GeoLocation;
 }
 
 /* ------------- Initial State ------------- */
 const INITIAL_STATE: LocationState = {
-  lat: 0,
-  lon: 0,
+  location: undefined,
   userCurrentLocation: undefined,
 };
 
 /* ------------- Reducers ------------- */
 
-const onSetLatitude = (
+const onSetLocation = (
   state: LocationState,
-  {payload: {lat}}: ReturnType<typeof actions.onSetLatitude>,
+  {payload: {location}}: ReturnType<typeof actions.onSetLocation>,
 ) => ({
   ...state,
-  lat,
+  location: location,
 });
 
-const onSetLongitude = (
-  state: LocationState,
-  {payload: {lon}}: ReturnType<typeof actions.onSetLongitude>,
-) => ({
-  ...state,
-  lon,
-});
 
 const setCurrentUserLocation = (
   state: LocationState,
@@ -48,8 +39,7 @@ const setCurrentUserLocation = (
 
 /* ------------- Hookup Reducers To Types ------------- */
 const reducer = createReducer(INITIAL_STATE, {
-  [getType(actions.onSetLatitude)]: onSetLatitude,
-  [getType(actions.onSetLongitude)]: onSetLongitude,
+  [getType(actions.onSetLocation)]: onSetLocation,
   [getType(actions.setCurrentUserLocation)]: setCurrentUserLocation,
 });
 
@@ -65,8 +55,7 @@ const reducerMap = {
 /* ------------- Selectors ------------- */
 const getReducerState = (state: any): LocationState => state[stateKey];
 const selectors = {
-  getLatitude: ({lat}: LocationState) => lat,
-  getLongitude: ({lon}: LocationState) => lon,
+  getLocation: ({location}: LocationState) => location,
   getCurrentUserLocation: ({userCurrentLocation}: LocationState) =>
     userCurrentLocation,
 };

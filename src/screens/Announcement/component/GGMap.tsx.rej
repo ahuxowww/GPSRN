@@ -1,7 +1,0 @@
-diff a/src/screens/Announcement/component/GGMap.tsx b/src/screens/Announcement/component/GGMap.tsx	(rejected hunks)
-@@ -8,4 +8,5 @@
-  import {format} from 'date-fns';
- -import {MapThunk} from '@src/redux/thunks';
- -import {useCallback} from 'react';
-++
-  

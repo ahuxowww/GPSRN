@@ -1,13 +1,19 @@
-import React, {useRef, ReactNode, useEffect, useState, useCallback} from 'react';
-import {StyleSheet, PermissionsAndroid} from 'react-native';
+import React, {
+  useRef,
+  ReactNode,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+import {StyleSheet} from 'react-native';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {Colors, Metrics, Svgs} from '../../../assets';
 import {Marker} from './Marker';
 import {useVehicle} from '@src/hooks/vehicle';
-import {format} from 'date-fns';
-
-
+import {useSelector} from 'react-redux';
+import {LocationRedux} from '@src/redux/reducers';
+import R from 'ramda';
 interface GGMapProps {
   onPress?: (feature: any) => void;
   center?: {
@@ -20,15 +26,37 @@ interface GGMapProps {
   data?: any;
 }
 
+interface Region {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+}
+
 export const GGMap = (props: GGMapProps) => {
   const {onPress} = props;
 
-  const [previousPosition, setPreviousPosition] = useState<any | null>(null);
   const mapRef = useRef<any>(null);
   const {getVehicle} = useVehicle();
   const mapOptions = {
     scrollEnabled: true,
   };
+  const location = useSelector(
+    R.pipe(LocationRedux.getReducerState, LocationRedux.selectors.getLocation),
+  );
+
+  const LastRegion: Region = {
+    latitude: location?.f_latitude ?? 0,
+    longitude: location?.f_longitude ?? 0,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  };
+  console.log(location);
+  useEffect(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 100);
+  }, []);
 
   const onFocusLocation = useCallback(() => {}, []);
 
@@ -52,11 +80,11 @@ export const GGMap = (props: GGMapProps) => {
           isGGMap
           data={{
             location: {
-              lat: previousPosition?.coords?.latitude,
-              lon: previousPosition?.coords?.longitude,
+              lat: location?.f_latitude ?? 0,
+              lon: location?.f_longitude ?? 0,
             },
             type: getVehicle,
-            heading: previousPosition?.coords?.heading,
+            heading: location?.f_heading ?? 0,
           }}
         />
       </MapView>
@@ -88,7 +116,7 @@ const styles = StyleSheet.create({
   },
   buttonPosition: {
     position: 'absolute',
-    bottom: Metrics.screen.height / 2,
+    top: 60,
     right: 20,
   },
   buttonIcon: {

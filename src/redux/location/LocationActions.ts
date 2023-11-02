@@ -4,12 +4,8 @@ import {GeoLocation} from '@src/domain/map/type';
 
 const typePrefixFormat = createActionTypePrefixFormat('location');
 
-const onSetLatitude = createAction(typePrefixFormat('onSetLatitude'))<{
-  lat: number;
-}>();
-
-const onSetLongitude = createAction(typePrefixFormat('onSetLongitude'))<{
-  lon: number;
+const onSetLocation = createAction(typePrefixFormat('onSetLocation'))<{
+  location: any;
 }>();
 
 const setCurrentUserLocation = createAction(
@@ -17,7 +13,6 @@ const setCurrentUserLocation = createAction(
 )<{location?: GeoLocation}>();
 
 export const actions = {
-  onSetLatitude,
-  onSetLongitude,
+  onSetLocation,
   setCurrentUserLocation,
 };

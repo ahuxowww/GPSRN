@@ -438,13 +438,13 @@ export const GGMap = (props: GGMapProps) => {
   useEffect(() => {
     setTimeout(() => {
       mapRef.current?.animateToRegion(LastRegion, 1000);
-    }, 1000);
+    }, 100);
   }, [LastRegion]);
 
   const onFocusLocation = useCallback(() => {
     setTimeout(() => {
       mapRef.current?.animateToRegion(LastRegion, 1000);
-    }, 1000);
+    }, 100);
   }, [LastRegion]);
 
   return (
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     position: 'absolute',
-    bottom: Metrics.screen.height / 2,
+    top: 60,
     right: 20,
   },
 });
