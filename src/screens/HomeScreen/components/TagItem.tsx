@@ -6,16 +6,16 @@ import Text from '../../component/common/Text';
 
 interface TagProps {
   title?: string;
-  subTitle?: string;
   type?: string;
+  active?: boolean;
   onPress?: () => void;
 }
 
-const Tag: FC<TagProps> = ({title, subTitle, type, onPress}) => {
+const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
   const renderIcon = () => {
     switch (type) {
       case 'car':
-        return <Svgs.Car width={24} height={24} />;
+        return <Svgs.CarBlack width={24} height={24} />;
       case 'bike':
         return <Svgs.Bike width={24} height={24} />;
       case 'motor':
@@ -35,12 +35,14 @@ const Tag: FC<TagProps> = ({title, subTitle, type, onPress}) => {
           {title}
         </Text>
         <Text body_regular color={Colors.greyNightRider57}>
-          {subTitle}
+          {active ? '🟢 Online' : 'Offline'}
         </Text>
       </View>
-      <TouchableOpacity onPress={onPress}>
-        <Svgs.Right width={24} height={24} />
-      </TouchableOpacity>
+      {active && (
+        <TouchableOpacity onPress={onPress}>
+          <Svgs.Right width={24} height={24} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

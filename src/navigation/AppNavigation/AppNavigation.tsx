@@ -15,6 +15,11 @@ import {onValue, ref} from 'firebase/database';
 import {actions} from '@src/redux/location/LocationActions';
 import {actions as userActions} from '@src/redux/user/UserActions';
 import {db, firebase} from '@src/config/firebaseconfig';
+import {
+  requestUserPermission,
+  NotificationListener,
+} from '@src/services/PushNotification';
+import {PermissionsAndroid} from 'react-native';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -31,6 +36,13 @@ const AppNavigation: React.FC = () => {
       dispatch(actions.onSetLocation({location: data}));
     });
   }, [dispatch]);
+
+  React.useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+    NotificationListener();
+  }, []);
 
   React.useEffect(() => {
     firebase

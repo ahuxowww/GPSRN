@@ -19,6 +19,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath 'com.google.gms:google-services:4.4.0'  // Google Services plugin
     }
 }
 
@@ -34,17 +35,6 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
-        // react-native-background-geolocation START
-        maven {
-            // Required for react-native-background-geolocation
-            url("${project(':react-native-background-geolocation').projectDir}/libs")
-        }
-        maven {
-            // Required for react-native-background-fetch
-            url("${project(':react-native-background-fetch').projectDir}/libs")
-        }
-        // react-native-background-geolocation END
-
         google()
         maven { url 'https://www.jitpack.io' }
     }

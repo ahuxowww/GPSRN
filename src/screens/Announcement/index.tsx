@@ -34,14 +34,6 @@ const Map = () => {
   const mockData = [
     {title: 'Tốc độ', value: (getSpeed * 3.6).toFixed(2), type: 'km/h'},
     {
-      title: 'Quãng đường đi đến xe của bạn',
-      value:
-        getDistance / 1000 > 1
-          ? (getDistance / 1000).toFixed(2)
-          : getDistance.toFixed(2),
-      type: getDistance / 1000 > 1 ? 'km' : 'm',
-    },
-    {
       title: 'Tình trạng',
       value: status[getStateMap ?? 0].label,
       type: '',
@@ -50,10 +42,10 @@ const Map = () => {
   ];
 
   const onOpenBottomDetail = useCallback(() => {
-    setBottomMapDialog(true);
+    setBottomMapDialog(false);
   }, []);
   const onCloseBottomDetail = useCallback(() => {
-    setBottomMapDialog(false);
+    setBottomMapDialog(true);
   }, []);
   const ITEM_LENGTH = Metrics.screen.width - 60;
 
@@ -70,7 +62,9 @@ const Map = () => {
     ({item, index}: {item: any; index: number}) => {
       return (
         <View style={styles.itemJourney}>
-          <View row style={{justifyContent: 'space-between'}}>
+          <View
+            row
+            style={[styles.headerItem, {justifyContent: 'space-between'}]}>
             <View flex>
               <Text h2 color={Colors.white}>
                 {item.title}
@@ -107,7 +101,7 @@ const Map = () => {
       <MainTitle marginH-24 title="Vị trí" />
       <ScrollView style={{flex: 1}}>
         {renderMap()}
-        {bottomMapDialog && (
+        {!bottomMapDialog && (
           <View style={styles.position}>
             <Carousel
               disableIntervalMomentum
@@ -125,7 +119,7 @@ const Map = () => {
             />
           </View>
         )}
-        {!bottomMapDialog && (
+        {bottomMapDialog && (
           <TouchableOpacity
             onPress={onOpenBottomDetail}
             style={[styles.position, {left: 16}]}>
@@ -161,5 +155,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.blueDarkTurquoise,
     borderRadius: 16,
     padding: 16,
+  },
+  headerItem: {
+    borderBottomColor: Colors.white,
+    borderBottomWidth: 1,
+    paddingBottom: 10,
   },
 });

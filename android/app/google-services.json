@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "204042669842",
+    "firebase_url": "https://test-gps-e2521-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "test-gps-e2521",
+    "storage_bucket": "test-gps-e2521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204042669842:android:7b080e8e9cf7dc857dadcb",
+        "android_client_info": {
+          "package_name": "com.appaxohu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204042669842-vnj4p0ifhjtc4bt30ec1pop4sidukio2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdd9L4DbKup0td2801TVybufi0ecYtFRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204042669842-vnj4p0ifhjtc4bt30ec1pop4sidukio2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

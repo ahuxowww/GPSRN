@@ -5,7 +5,7 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import {StyleSheet} from 'react-native';
+import {Linking, Platform, StyleSheet} from 'react-native';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {Colors, Metrics, Svgs} from '../../../assets';
@@ -48,8 +48,8 @@ export const GGMap = (props: GGMapProps) => {
   const LastRegion: Region = {
     latitude: location?.f_latitude ?? 0,
     longitude: location?.f_longitude ?? 0,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: 0.002,
+    longitudeDelta: 0.002,
   };
 
   useEffect(() => {
@@ -58,7 +58,26 @@ export const GGMap = (props: GGMapProps) => {
     }, 100);
   }, []);
 
-  const onFocusLocation = useCallback(() => {}, []);
+  const onFocusLocation = useCallback(() => {
+    setTimeout(() => {
+      mapRef.current?.animateToRegion(LastRegion, 1000);
+    }, 100);
+  }, [LastRegion]);
+
+  const onGoToMaps = useCallback(() => {
+    const url: any = Platform.select({
+      ios: `comgooglemaps://?center=${location?.f_latitude},${location?.f_longitude}&q=${location?.f_latitude},${location?.f_longitude}&zoom=14&views=traffic"`,
+      android: `geo://?q=${location?.f_latitude},${location?.f_longitude}`,
+    });
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      } else {
+        const browser_url = `https://www.google.de/maps/@${location?.f_latitude},${location?.f_longitude}`;
+        return Linking.openURL(browser_url);
+      }
+    });
+  }, [location?.f_latitude, location?.f_longitude]);
 
   return (
     <View style={styles.container}>
@@ -74,8 +93,7 @@ export const GGMap = (props: GGMapProps) => {
         rotateEnabled
         showsMyLocationButton
         showsIndoorLevelPicker
-        pitchEnabled
-        zoomControlEnabled>
+        pitchEnabled>
         <Marker
           isGGMap
           data={{
@@ -98,7 +116,7 @@ export const GGMap = (props: GGMapProps) => {
         <TouchableOpacity
           marginT-24
           style={styles.buttonIcon}
-          onPress={onFocusLocation}
+          onPress={onGoToMaps}
           center>
           <Svgs.Directions width={32} height={32} />
         </TouchableOpacity>
@@ -109,7 +127,7 @@ export const GGMap = (props: GGMapProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: Metrics.screen.height - 100,
+    height: Metrics.screen.height - 125,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

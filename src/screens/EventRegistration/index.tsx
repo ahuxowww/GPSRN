@@ -1,13 +1,57 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, PermissionsAndroid} from 'react-native';
+import React, {useCallback} from 'react';
+import {ScrollView, StyleSheet} from 'react-native';
 import Container from '../component/Container';
 import {GGMap} from './component/GGMap';
-import {Marker} from './component/Marker';
-import {Colors, Images, Metrics, Svgs} from '../../assets';
+import {Colors, Metrics, Svgs} from '../../assets';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MainTitle from '../component/MainTitle';
 import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
+import {LineCoord} from '../Announcement/component/inteface';
+import Axios from 'axios';
+import {useSelector} from 'react-redux';
+import {LocationRedux} from '@src/redux/reducers';
+import R from 'ramda';
+
+interface AddressComponent {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
+
+interface GeoPoint {
+  lat: number;
+  lng: number;
+}
+
+interface Geometry {
+  location: GeoPoint;
+  location_type: string;
+  viewport: {
+    northeast: GeoPoint;
+    southwest: GeoPoint;
+  };
+}
+
+interface AddressFromGeoResult {
+  plus_code: PlusCode;
+  results: AddressResult[];
+  status: string;
+}
+
+interface PlusCode {
+  compound_code: string;
+  global_code: string;
+}
+
+interface AddressResult {
+  address_components: AddressComponent[];
+  formatted_address: string;
+  geometry: Geometry;
+  place_id: string;
+  plus_code: PlusCode;
+  types: string[];
+}
 
 const EventRegistration = () => {
   const mockData = [
@@ -296,17 +340,21 @@ const EventRegistration = () => {
   const renderIcon = (type: string) => {
     switch (type) {
       case 'car':
-        return <Svgs.Car width={32} height={32} />;
+        return <Svgs.Car width={32} height={32} fill={Colors.white} />;
       case 'bike':
-        return <Svgs.Bike width={32} height={32} />;
+        return <Svgs.Bike width={32} height={32} fill={Colors.white} />;
       case 'motor':
-        return <Svgs.Motor width={32} height={32} />;
+        return <Svgs.Motor width={32} height={32} fill={Colors.white} />;
       case 'walk':
-        return <Svgs.Walk width={32} height={32} />;
+        return <Svgs.Walk width={32} height={32} fill={Colors.white} />;
       default:
-        return <Svgs.Motor width={32} height={32} />;
+        return <Svgs.Motor width={32} height={32} fill={Colors.white} />;
     }
   };
+
+  const locationData = useSelector(
+    R.pipe(LocationRedux.getReducerState, LocationRedux.selectors.getLocation),
+  );
 
   const renderMap = useCallback(() => {
     return (
@@ -341,18 +389,30 @@ const EventRegistration = () => {
         <View style={styles.itemJourney}>
           <View spread row style={styles.headerItem}>
             <View center row>
-              <Text body_bold>Phương tiện : </Text>
+              <Text color={Colors.white} body_bold>
+                Phương tiện :{' '}
+              </Text>
               {renderIcon(item.method)}
             </View>
             <TouchableOpacity onPress={() => {}} center>
-              <Text body_bold>Thay đổi ? </Text>
+              <Text color={Colors.white} body_bold>
+                Thay đổi ?{' '}
+              </Text>
             </TouchableOpacity>
           </View>
           <View marginT-16>
-            <Text body_regular>Tốc độ trung bình : </Text>
-            <Text body_regular>Tốc độ lớn nhất : </Text>
-            <Text body_regular>Quãng đường đi được : </Text>
-            <Text body_regular>Tổng thời gian đã đi : </Text>
+            <Text color={Colors.white} body_regular>
+              Tốc độ trung bình :{' '}
+            </Text>
+            <Text color={Colors.white} body_regular>
+              Quãng đường :{' '}
+            </Text>
+            <Text color={Colors.white} body_regular>
+              Thời gian :{' '}
+            </Text>
+            <Text color={Colors.white} body_regular>
+              Địa chỉ :{' '}
+            </Text>
           </View>
         </View>
       );
@@ -425,7 +485,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   headerItem: {
-    borderBottomColor: Colors.black,
+    borderBottomColor: Colors.white,
     borderBottomWidth: 1,
   },
 });

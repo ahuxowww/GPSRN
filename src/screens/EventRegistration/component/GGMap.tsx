@@ -479,7 +479,7 @@ export const GGMap = (props: GGMapProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: Metrics.screen.height - 100,
+    height: Metrics.screen.height - 125,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

@@ -33,7 +33,7 @@ const Input: FC<Props> = ({
   }, []);
 
   return (
-    <View marginT-16>
+    <View flex>
       <View style={styles.container}>
         <View row style={styles.spaceBetween} center>
           <View style={styles.inputContainer}>
@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 16,
-    width: Metrics.screen.width,
   },
   inputContainer: {
     flex: 1,

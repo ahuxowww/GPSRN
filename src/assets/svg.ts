@@ -1,7 +1,9 @@
+export {default as Add} from './svg/add.svg';
 export {default as Clock} from './svg/clock.svg';
 export {default as Close} from './svg/close.svg';
 export {default as Menu} from './svg/menu.svg';
 export {default as Car} from './svg/car.svg';
+export {default as CarBlack} from './svg/car_black.svg';
 export {default as Walk} from './svg/walk.svg';
 export {default as Bike} from './svg/bike.svg';
 export {default as Motor} from './svg/motor.svg';
