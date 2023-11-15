@@ -17,14 +17,6 @@ const tabList = [
   {label: 'Ofline', status: 2},
 ];
 
-const activeVehicle = [
-  {label: 'Xe số 4', subTitle: 'Online', time: '', type: 'motor'},
-];
-
-const offlineVehicle = [
-  {label: 'Xe số 1', subTitle: 'Tạm dừng', time: '4:00 h', type: 'car'},
-];
-
 const HomeScreen = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const navigation = useNavigation();
@@ -49,19 +41,12 @@ const HomeScreen = () => {
   }, []);
 
   const onChangeType = useCallback((index: number) => {
-    // ref?.current?.scrollTo({
-    //   x: 0,
-    //   y: 0,
-    //   animated: true,
-    // });
     setTabIndex(index);
   }, []);
 
   const onNavtoMapScreen = useCallback(() => {
     navigation.navigate('LocationStack');
   }, [navigation]);
-
-  const onAddVehicle = useCallback(() => {}, []);
 
   return (
     <Container

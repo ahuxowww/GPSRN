@@ -4,15 +4,22 @@ import {Text, Pressable, StyleSheet} from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {Colors} from '../../../assets';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {View} from 'react-native-ui-lib';
+import {Picker, View} from 'react-native-ui-lib';
 import Input from '@src/screens/component/common/Input';
 import {firebase} from '@src/config/firebaseconfig';
+
+const TRAVEL_METHOD_OPTIONS = [
+  {label: 'Motor', value: 'motor', id: 'motor'},
+  {label: 'Car', value: 'car', id: 'car'},
+];
 
 const BottomSheetDetails = props => {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['10%', '100%'], []);
   const [newVehicle, setNewVehicle] = useState('');
-
+  const [selectedId, setSelectedId] = React.useState<string | undefined>(
+    'motor',
+  );
   const onAddVehicle = useCallback(() => {
     if (!newVehicle) {
       return;
@@ -39,6 +46,27 @@ const BottomSheetDetails = props => {
           <View center style={styles.adressContainer}>
             <Text style={styles.adressText}>Tên xe:</Text>
             <Input textValue={newVehicle} onChangeText={setNewVehicle} />
+          </View>
+          <View center style={styles.adressContainer}>
+            <Text style={styles.adressText}>Phương tiện:</Text>
+            <Picker
+              migrate
+              placeholder="Chọn phương tiện"
+              value={selectedId}
+              onChange={value => setSelectedId(value)}
+              topBarProps={{title: 'Travel'}}
+              showSearch={false}
+              // style={{ color: Colors.black }}
+              // useNativePicker
+            >
+              {TRAVEL_METHOD_OPTIONS.map(option => (
+                <Picker.Item
+                  key={option.id}
+                  value={option.id}
+                  label={option.label}
+                />
+              ))}
+            </Picker>
           </View>
         </View>
         <Pressable
