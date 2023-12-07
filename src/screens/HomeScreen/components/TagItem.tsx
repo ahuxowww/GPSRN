@@ -1,17 +1,22 @@
-import React, {FC, memo} from 'react';
+import React, {FC, memo, useCallback} from 'react';
 import {View, TouchableOpacity} from 'react-native-ui-lib';
 import {StyleSheet} from 'react-native';
 import {Colors, Svgs} from '../../../assets';
 import Text from '../../component/common/Text';
+import {useNavigation} from '@react-navigation/native';
+import {useVehicle} from '@src/hooks/vehicle';
 
 interface TagProps {
   title?: string;
   type?: string;
   active?: boolean;
-  onPress?: () => void;
+  onDelete?: (item: any) => void;
 }
 
-const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
+const Tag: FC<TagProps> = ({title, type, active, onDelete}) => {
+  const navigation = useNavigation();
+  const {onChangeVehicle} = useVehicle();
+
   const renderIcon = () => {
     switch (type) {
       case 'car':
@@ -26,6 +31,10 @@ const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
         return <Svgs.Motor width={24} height={24} />;
     }
   };
+  const onNavtoMapScreen = useCallback(() => {
+    navigation.navigate('LocationStack');
+    onChangeVehicle({vehicle: type ?? 'car'});
+  }, [navigation, onChangeVehicle, type]);
 
   return (
     <View row flex centerV paddingV-8 paddingH-16 style={styles.container}>
@@ -38,11 +47,16 @@ const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
           {active ? '🟢 Online' : 'Offline'}
         </Text>
       </View>
-      {active && (
-        <TouchableOpacity onPress={onPress}>
-          <Svgs.Right width={24} height={24} />
+      <View row>
+        {active && (
+          <TouchableOpacity onPress={onNavtoMapScreen}>
+            <Svgs.Right width={24} height={24} />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity marginL-16 onPress={onDelete}>
+          <Svgs.Delete width={24} height={24} />
         </TouchableOpacity>
-      )}
+      </View>
     </View>
   );
 };

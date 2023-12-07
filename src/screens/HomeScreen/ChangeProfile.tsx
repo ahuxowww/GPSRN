@@ -3,7 +3,7 @@ import {FlatList, Platform, ScrollView, StyleSheet} from 'react-native';
 import {Colors, Svgs} from '../../assets';
 import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
 import {useUserLogin} from '@src/hooks/user';
@@ -30,12 +30,8 @@ const ChangeProfileScreen = () => {
   const {userData} = useUserLogin();
   const [isVisible, setVisible] = useState(false);
 
-  const onNavToVehicle = useCallback(() => {
-    navigation.navigate('SELECT_VEHICLE_SCREEN', {isProfile: true});
-  }, [navigation]);
-
   const onNavToChangeName = useCallback(() => {
-    navigation.navigate('CHANGE_NAME_PROFILE_SCREEN');
+    navigation.navigate('EDIT_FROFILE', {isProfile: true});
   }, [navigation]);
 
   const dispatch = useDispatch<AppThunkDispatch>();
@@ -194,7 +190,7 @@ const ChangeProfileScreen = () => {
             paddingV-12
             spread
             backgroundColor={Colors.white}>
-            <Text h_page_title>Thay đổi tên</Text>
+            <Text h_page_title>Thay đổi tài khoản</Text>
             <TouchableOpacity onPress={onNavToChangeName}>
               <Svgs.ArrowRight width={24} height={24} />
             </TouchableOpacity>
@@ -209,19 +205,6 @@ const ChangeProfileScreen = () => {
             backgroundColor={Colors.white}>
             <Text h_page_title>Thay đổi hình nền</Text>
             <TouchableOpacity onPress={onOpenModal}>
-              <Svgs.ArrowRight width={24} height={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View marginT-12>
-          <View
-            row
-            paddingH-24
-            paddingV-12
-            spread
-            backgroundColor={Colors.white}>
-            <Text h_page_title>Phương tiện</Text>
-            <TouchableOpacity onPress={onNavToVehicle}>
               <Svgs.ArrowRight width={24} height={24} />
             </TouchableOpacity>
           </View>

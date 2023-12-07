@@ -18,15 +18,13 @@ import {useSettings} from '@src/hooks/settings';
 import {useUserLogin} from '@src/hooks/user';
 import {DialogLib} from '../component/common/DialogLib';
 import {FIREBASE_AUTH} from '@src/config/firebaseconfig';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {actions} from '@src/redux/user/UserActions';
 import {Image} from 'react-native';
 import Text from '../component/common/Text';
-import {useNavigation} from '@react-navigation/native';
 import MainTitle from '../component/MainTitle';
+import {useNavigation} from '@react-navigation/native';
+import {firebase} from '@src/config/firebaseconfig';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -40,16 +38,12 @@ const loginSchema = Yup.object().shape({
     .min(6, 'Mật khẩu phải có hơn 6 ký tự!'),
 });
 
-const Login = () => {
-  const {rememberedUser, isRememberPW, onSetRememberPW, onSetcurrentUserInfo} =
-    useSettings();
-  const {currentUser} = useUserLogin();
-  const dispatch = useDispatch<AppThunkDispatch>();
+const SignIn = () => {
   const [showPassword, setShowPassword] = useState(true);
-  const [wrongPassword, setWrongPassword] = useState(false);
-  const [agreement, setAgreement] = useState<boolean>(isRememberPW);
   const scrollViewRef = useRef<any>();
   const navigation = useNavigation();
+  const dispatch = useDispatch<AppThunkDispatch>();
+
   const auth = FIREBASE_AUTH;
   const {
     control,
@@ -59,78 +53,50 @@ const Login = () => {
   } = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      user: rememberedUser.user,
-      password: rememberedUser.password,
+      user: '',
+      password: '',
     },
   });
   const user = watch('user');
   const password = watch('password');
-  const onAgreement = useCallback((value: boolean) => {
-    setAgreement(value);
-  }, []);
 
   const onHidePassword = useCallback(() => {
     // Hide/show password
     setShowPassword(!showPassword);
   }, [showPassword]);
 
-  const signIn = useCallback(async () => {
-    try {
-      const res = await signInWithEmailAndPassword(auth, user, password);
-      if (res) {
-        dispatch(
-          actions.saveUser({
-            user: {
-              type: 'LOGIN',
-            },
-          }),
-        );
-        onSetRememberPW({rememberPW: agreement});
-        if (agreement) {
-          onSetcurrentUserInfo({currentPW: password, user});
-        } else {
-          onSetcurrentUserInfo({user: '', currentPW: ''});
-        }
-      }
-    } catch (e) {
-      setWrongPassword(true);
-    }
-  }, [
-    agreement,
-    auth,
-    dispatch,
-    onSetRememberPW,
-    onSetcurrentUserInfo,
-    password,
-    user,
-  ]);
-
   const signUp = useCallback(async () => {
     try {
       const res = await createUserWithEmailAndPassword(auth, user, password);
+      firebase
+        .firestore()
+        .collection('user')
+        .get()
+        .then(result => result.docs)
+        .then(docs =>
+          docs.map(doc => ({
+            id: doc.id,
+            username: doc.data().username,
+            uri: doc.data().uri,
+            method: doc.data().method,
+          })),
+        )
+        .then(data => {
+          dispatch(actions.saveUserData({userData: data[0]}));
+        });
     } catch (e) {
       console.log(e);
     }
-  }, [auth, password, user]);
+  }, [auth, dispatch, password, user]);
 
-  const onSubmit = useCallback(
-    async data => {
-      signIn();
-    },
-    [signIn],
-  );
+  const onSubmit = useCallback(async () => {
+    await signUp();
+    navigation.navigate('EDIT_FROFILE');
+  }, [navigation, signUp]);
 
   const onBlur = useCallback(() => {
     scrollViewRef?.current?.scrollToEnd();
   }, [scrollViewRef]);
-
-  const onCloseModal = useCallback(() => {
-    setWrongPassword(false);
-  }, []);
-
-  const onSignIn = useCallback(() => {
-    navigation.navigate('SIGN_IN');
-  }, [navigation]);
 
   return (
     <KeyboardAvoidingView undefinedBehavior style={styles.safeView}>
@@ -143,7 +109,7 @@ const Login = () => {
           ref={scrollViewRef}
           style={styles.container}
           showsVerticalScrollIndicator={false}>
-          <MainTitle title="Đăng nhập" marginR-28/>
+          <MainTitle title="Đăng ký" marginR-28 isgoBack />
           <View center marginV-20 marginT-50>
             <Image
               source={Images.logo.logo_app}
@@ -165,7 +131,7 @@ const Login = () => {
                   value={value}
                   onChangeText={onChange}
                   style={styles.texFiledContainer}
-                  placeholder={'Nhập email'}
+                  placeholder={'Nhập Email'}
                   colorIcon={Colors.brownKabul50}
                   onPressIcon={() => {}}
                   isError={!!errors?.user?.message}
@@ -196,16 +162,6 @@ const Login = () => {
               )}
             />
           </View>
-          <View row spread centerV marginT-12>
-            <CheckBox
-              label="Lưu mật khẩu"
-              value={agreement}
-              onChange={onAgreement}
-            />
-            <TouchableOpacity onPress={() => {}}>
-              <Text color={Colors.blueMalibu}>{'Quên mật khẩu?'}</Text>
-            </TouchableOpacity>
-          </View>
           <View
             marginB-20
             row
@@ -213,23 +169,11 @@ const Login = () => {
             style={styles.button}>
             <Button
               disabled={false}
-              label={'Đăng nhập'}
+              label={'Đăng ký'}
               onPress={handleSubmit(onSubmit)}
             />
           </View>
-          <TouchableOpacity center onPress={onSignIn}>
-            <Text body_bold color={Colors.white}>
-              {' '}
-              Bạn chưa có tài khoản ?{' '}
-            </Text>
-          </TouchableOpacity>
         </ScrollView>
-        <DialogLib
-          visible={wrongPassword}
-          title={'Đăng nhập'}
-          description={'Tài khoản không tồn tại'}
-          onClose={onCloseModal}
-        />
       </Container>
     </KeyboardAvoidingView>
   );
@@ -265,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default SignIn;

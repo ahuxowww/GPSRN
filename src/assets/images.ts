@@ -13,5 +13,7 @@ export const images = {
     top_motor: require('./icons/motor_top.png'),
     car: require('./icons/UberX.jpeg'),
     top_car: require('./icons/top-UberX.png'),
+    logo: require('./icons/ahuxo-logo.png'),
+    logo_app: require('./icons/logo_app.jpg')
   },
 };

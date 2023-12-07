@@ -19,10 +19,6 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-      <!-- react-native-background-geolocation licence -->
-      <meta-data 
-        android:name="com.transistorsoft.locationmanager.license" 
-        android:value="2a28fb3b468796f7f84522787823adb210acfe772b8aad44fa0a51fc89cc7d8d" />
       <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyBXiiESXKSfWBu1ikVTDaEdRZWrKcnC6p0"/>

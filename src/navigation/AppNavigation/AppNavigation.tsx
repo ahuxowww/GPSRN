@@ -15,11 +15,11 @@ import {onValue, ref} from 'firebase/database';
 import {actions} from '@src/redux/location/LocationActions';
 import {actions as userActions} from '@src/redux/user/UserActions';
 import {db, firebase} from '@src/config/firebaseconfig';
-import {
-  requestUserPermission,
-  NotificationListener,
-} from '@src/services/PushNotification';
+import {NotificationListener} from '@src/services/PushNotification';
 import {PermissionsAndroid} from 'react-native';
+import SignIn from '@src/screens/SignIn';
+import EditProfile from '@src/screens/EditFrofile';
+import CreateJourney from '@src/screens/CreateJourney';
 
 const AppNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -27,7 +27,6 @@ const AppNavigation: React.FC = () => {
   const {getVehicle} = useVehicle();
   const isLogin = currentUser?.type === 'LOGIN';
   const dispatch = useDispatch<AppThunkDispatch>();
-
   React.useEffect(() => {
     const starCountRef = ref(db, 'GPS/');
 
@@ -67,20 +66,25 @@ const AppNavigation: React.FC = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {!isLogin ? (
-          <Stack.Screen
-            name="LOGIN_SCREEN"
-            component={Login}
-            options={{headerShown: false}}
-          />
+          <>
+            <Stack.Screen
+              name="LOGIN_SCREEN"
+              component={Login}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SIGN_IN"
+              component={SignIn}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EDIT_FROFILE"
+              component={EditProfile}
+              options={{headerShown: false}}
+            />
+          </>
         ) : (
           <>
-            {!getVehicle ? (
-              <Stack.Screen
-                name="SELECT_VEHICLE_SCREEN"
-                component={SelectVehicleScreen}
-                options={{headerShown: false}}
-              />
-            ) : null}
             <Stack.Screen
               name="MAIN_TAB"
               component={MainTabAnimation}
@@ -101,13 +105,21 @@ const AppNavigation: React.FC = () => {
               component={ChangeNameScreen}
               options={{headerShown: false}}
             />
-            {getVehicle ? (
-              <Stack.Screen
-                name="SELECT_VEHICLE_SCREEN"
-                component={SelectVehicleScreen}
-                options={{headerShown: false}}
-              />
-            ) : null}
+            <Stack.Screen
+              name="EDIT_FROFILE"
+              component={EditProfile}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SELECT_VEHICLE_SCREEN"
+              component={SelectVehicleScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CREATE_JOURNEY"
+              component={CreateJourney}
+              options={{headerShown: false}}
+            />
           </>
         )}
       </Stack.Navigator>

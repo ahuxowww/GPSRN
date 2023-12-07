@@ -22,3 +22,5 @@ export {default as StartPoint} from './svg/start_point.svg';
 export {default as FinishPoint} from './svg/finish_point.svg';
 export {default as Directions} from './svg/directions.svg';
 export {default as FocusLocation} from './svg/focus.svg';
+export {default as Play} from './svg/play.svg';
+export {default as Delete} from './svg/delete.svg';
