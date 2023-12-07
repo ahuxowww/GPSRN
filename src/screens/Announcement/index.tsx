@@ -9,14 +9,18 @@ import MainTitle from '../component/MainTitle';
 import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
 import {useConnectMap} from '@src/hooks/map';
+import {useSelector} from 'react-redux';
+import {LocationRedux} from '@src/redux/reducers';
+import R from 'ramda';
 
 const Map = () => {
   const status = [
     {label: 'An toàn', status: 1},
     {label: 'Nguy hiểm', status: 2},
   ];
-
-  const {getSpeed, getDistance, getStateMap} = useConnectMap();
+  const location = useSelector(
+    R.pipe(LocationRedux.getReducerState, LocationRedux.selectors.getLocation),
+  );
 
   const [bottomMapDialog, setBottomMapDialog] = useState(false);
   // const { userMapName } = useUserProfile();
@@ -32,10 +36,14 @@ const Map = () => {
   }, []);
 
   const mockData = [
-    {title: 'Tốc độ', value: (getSpeed * 3.6).toFixed(2), type: 'km/h'},
+    {
+      title: 'Tốc độ',
+      value: ((location.f_heading ?? 0) * 3.6).toFixed(2),
+      type: 'km/h',
+    },
     {
       title: 'Tình trạng',
-      value: status[getStateMap ?? 0].label,
+      value: status[location?.f_heading * 3.6 > 40 ? 1 : 0].label,
       type: '',
       color: 'green',
     },

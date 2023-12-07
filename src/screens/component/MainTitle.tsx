@@ -26,8 +26,8 @@ const MainTitle: FC<Props> = ({
   const customFontSize = fontSize ? {fontSize} : styles.title;
   const navigation = useNavigation();
 
-  const onNavSetting = useCallback(() => {
-    navigation.navigate('SETTING_SCREEN');
+  const onStartJourney = useCallback(() => {
+    navigation.navigate('CREATE_JOURNEY');
   }, [navigation]);
 
   const onGoback = useCallback(() => {
@@ -50,8 +50,8 @@ const MainTitle: FC<Props> = ({
         (customRightIcon ? (
           customRightIcon
         ) : (
-          <TouchableOpacity right marginR-16 onPress={onNavSetting}>
-            <Svgs.Menu height={28} width={28} fill={Colors.white} />
+          <TouchableOpacity right marginR-16 onPress={onStartJourney}>
+            <Svgs.Play height={24} width={24} fill={Colors.white} />
           </TouchableOpacity>
         ))}
     </View>

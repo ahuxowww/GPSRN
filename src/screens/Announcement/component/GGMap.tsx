@@ -91,9 +91,10 @@ export const GGMap = (props: GGMapProps) => {
         {...mapOptions}
         followsUserLocation
         rotateEnabled
-        showsMyLocationButton
-        showsIndoorLevelPicker
-        pitchEnabled>
+        // showsMyLocationButton
+        // showsIndoorLevelPicker
+        // pitchEnabled
+      >
         <Marker
           isGGMap
           data={{
@@ -101,8 +102,8 @@ export const GGMap = (props: GGMapProps) => {
               lat: location?.f_latitude ?? 0,
               lon: location?.f_longitude ?? 0,
             },
-            type: getVehicle,
-            heading: location?.f_heading ?? 0,
+            type: 'car',
+            heading: 92 ?? 0,
           }}
         />
       </MapView>

@@ -48,6 +48,25 @@ const HomeScreen = () => {
     navigation.navigate('LocationStack');
   }, [navigation]);
 
+  const onDeleteVehicle = useCallback(async (item: string) => {
+    await firebase.firestore().collection('vehicle').doc(item).delete();
+    firebase
+      .firestore()
+      .collection('vehicle')
+      .get()
+      .then(result => result.docs)
+      .then(docs =>
+        docs.map(doc => ({
+          id: doc.id,
+          method: doc.data().method,
+          active: doc.data().active,
+          name: doc.data().name,
+        })),
+      )
+      .then(data => {
+        setVehicleList(data);
+      });
+  }, []);
   return (
     <Container
       safeBottom
@@ -62,41 +81,44 @@ const HomeScreen = () => {
       />
       <ScrollView style={{flex: 1}}>
         {tabIndex === 0
-          ? vehicleList.map((item: any, index: number) => (
+          ? vehicleList.map((item: any) => (
               <TagItem
                 title={item.name}
                 type={item.method}
                 onPress={onNavtoMapScreen}
                 active={item.active}
-                key={index}
+                onDelete={() => onDeleteVehicle(item.id)}
+                key={item.id}
               />
             ))
           : tabIndex === 1
           ? vehicleList
               .filter(item => item.active)
-              .map((item: any, index: number) => (
+              .map((item: any) => (
                 <TagItem
                   title={item.name}
                   type={item.method}
                   active={item.active}
                   onPress={onNavtoMapScreen}
-                  key={index}
+                  onDelete={() => onDeleteVehicle(item.id)}
+                  key={item.id}
                 />
               ))
           : tabIndex === 2
           ? vehicleList
               .filter(item => !item.active)
-              .map((item: any, index: number) => (
+              .map((item: any) => (
                 <TagItem
                   title={item.name}
                   type={item.method}
-                  key={index}
                   active={item.active}
+                  onDelete={onDeleteVehicle}
+                  key={item.id}
                 />
               ))
           : null}
       </ScrollView>
-      <BottomSheetDetails />
+      <BottomSheetDetails setVehicleList={setVehicleList} />
     </Container>
   );
 };

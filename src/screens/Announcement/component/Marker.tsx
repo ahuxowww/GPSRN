@@ -34,9 +34,37 @@ const MarkerImage: FC<MarkerImageProps> = ({type, heading}) => {
     );
   }
   if (type === 'motor') {
-    return <Image source={Images.logo.top_motor} style={styles.icon} />;
+    return (
+      <Image
+        source={Images.logo.top_motor}
+        style={[
+          styles.icon,
+          {
+            transform: [
+              {
+                rotate: `${heading ? heading : 0}deg`,
+              },
+            ],
+          },
+        ]}
+      />
+    );
   }
-  return <Image source={Images.logo.top_motor} style={styles.icon} />;
+  return (
+    <Image
+      source={Images.logo.top_motor}
+      style={[
+        styles.icon,
+        {
+          transform: [
+            {
+              rotate: `${heading ? heading : 0}deg`,
+            },
+          ],
+        },
+      ]}
+    />
+  );
 };
 
 const MarkerView: FC<MarkerProps> = ({isGGMap, data}) => {

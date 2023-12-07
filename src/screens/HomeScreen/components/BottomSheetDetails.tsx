@@ -17,20 +17,38 @@ const BottomSheetDetails = props => {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['10%', '100%'], []);
   const [newVehicle, setNewVehicle] = useState('');
+  const [idVehicle, setIdVehicle] = useState('');
   const [selectedId, setSelectedId] = React.useState<string | undefined>(
     'motor',
   );
   const onAddVehicle = useCallback(() => {
-    if (!newVehicle) {
+    if (!newVehicle || !selectedId) {
       return;
     }
     firebase.firestore().collection('vehicle').add({
-      method: 'car',
+      method: selectedId,
       active: false,
       name: newVehicle,
     });
+    firebase
+      .firestore()
+      .collection('vehicle')
+      .get()
+      .then(result => result.docs)
+      .then(docs =>
+        docs.map(doc => ({
+          id: doc.id,
+          method: doc.data().method,
+          active: doc.data().active,
+          name: doc.data().name,
+        })),
+      )
+      .then(data => {
+        props.setVehicleList(data);
+      });
     setNewVehicle('');
-  }, [newVehicle]);
+    setSelectedId('');
+  }, [newVehicle, props, selectedId]);
 
   return (
     <GestureHandlerRootView
@@ -49,24 +67,36 @@ const BottomSheetDetails = props => {
           </View>
           <View center style={styles.adressContainer}>
             <Text style={styles.adressText}>Phương tiện:</Text>
-            <Picker
-              migrate
-              placeholder="Chọn phương tiện"
-              value={selectedId}
-              onChange={value => setSelectedId(value)}
-              topBarProps={{title: 'Travel'}}
-              showSearch={false}
-              // style={{ color: Colors.black }}
-              // useNativePicker
-            >
-              {TRAVEL_METHOD_OPTIONS.map(option => (
-                <Picker.Item
-                  key={option.id}
-                  value={option.id}
-                  label={option.label}
-                />
-              ))}
-            </Picker>
+            <View flex paddingH-20 marginT-10>
+              <Picker
+                migrate
+                placeholder="Chọn phương tiện"
+                value={selectedId}
+                onChange={value => setSelectedId(value)}
+                topBarProps={{title: 'Travel'}}
+                showSearch={false}
+                style={{
+                  height: 44,
+                  borderRadius: 22,
+                  borderWidth: 1,
+                  borderColor: Colors.border,
+                  padding: 20,
+                }}
+                // useNativePicker
+              >
+                {TRAVEL_METHOD_OPTIONS.map(option => (
+                  <Picker.Item
+                    key={option.id}
+                    value={option.id}
+                    label={option.label}
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+          <View center style={styles.adressContainer}>
+            <Text style={styles.adressText}>Nhập ID:</Text>
+            <Input textValue={idVehicle} onChangeText={setIdVehicle} />
           </View>
         </View>
         <Pressable
@@ -132,13 +162,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   buttonContainer: {
-    marginVertical: 30,
+    marginVertical: 10,
     marginHorizontal: 10,
     borderRadius: 10,
   },
   buttonText: {
     color: 'white',
-    paddingVertical: 15,
+    paddingVertical: 10,
     fontSize: 25,
     fontWeight: '500',
     textAlign: 'center',

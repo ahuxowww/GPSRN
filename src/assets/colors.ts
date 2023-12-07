@@ -10,7 +10,7 @@ export default {
   blue: '#0000FF',
   blueDark: '#0058B7',
   blueDark10: '#0058B71A',
-  blueDarkTurquoise: '#00C2D6',
+  blueDarkTurquoise: '#56c2f1',
   blueMalibu: '#62B5E5',
   blueMalibu10: '#62B5E51A',
   blueNavy: '#007CCC',

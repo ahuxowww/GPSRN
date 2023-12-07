@@ -9,9 +9,10 @@ interface TagProps {
   type?: string;
   active?: boolean;
   onPress?: () => void;
+  onDelete?: (item: any) => void;
 }
 
-const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
+const Tag: FC<TagProps> = ({title, type, active, onPress, onDelete}) => {
   const renderIcon = () => {
     switch (type) {
       case 'car':
@@ -38,11 +39,16 @@ const Tag: FC<TagProps> = ({title, type, active, onPress}) => {
           {active ? '🟢 Online' : 'Offline'}
         </Text>
       </View>
-      {active && (
-        <TouchableOpacity onPress={onPress}>
-          <Svgs.Right width={24} height={24} />
+      <View row>
+        {active && (
+          <TouchableOpacity onPress={onPress}>
+            <Svgs.Right width={24} height={24} />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity marginL-16 onPress={onDelete}>
+          <Svgs.Delete width={24} height={24} />
         </TouchableOpacity>
-      )}
+      </View>
     </View>
   );
 };
