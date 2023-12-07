@@ -27,7 +27,7 @@ const MainTitle: FC<Props> = ({
   const navigation = useNavigation();
 
   const onStartJourney = useCallback(() => {
-    navigation.navigate('CREATE_JOURNEY');
+    navigation.navigate('CREATE_JOURNEY', {startTime: new Date()});
   }, [navigation]);
 
   const onGoback = useCallback(() => {
