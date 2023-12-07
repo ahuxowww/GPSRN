@@ -12,7 +12,7 @@ interface ModalProps {
   title?: string;
   description?: string;
   imageBackground?: any;
-  action?: React.ReactNode;
+  children?: React.ReactNode;
   isDelete?: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
@@ -26,7 +26,7 @@ export const DialogLib: FC<ModalProps> = ({
   isDelete,
   onClose,
   onConfirm,
-  action,
+  children,
 }) => {
   const renderButton = useCallback(() => {
     if (isDelete) {
@@ -83,7 +83,7 @@ export const DialogLib: FC<ModalProps> = ({
               {description}
             </Text>
           )}
-          {action ? action : renderButton()}
+          {children ? children : renderButton()}
         </View>
       </TouchableOpacity>
     </Dialog>

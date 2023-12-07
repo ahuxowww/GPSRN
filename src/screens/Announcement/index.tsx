@@ -1,17 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, PermissionsAndroid} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {Image, ScrollView, StyleSheet} from 'react-native';
 import Container from '../component/Container';
 import {GGMap} from './component/GGMap';
-import {Marker} from './component/Marker';
 import {Colors, Images, Metrics, Svgs} from '../../assets';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import MainTitle from '../component/MainTitle';
 import Carousel from 'react-native-snap-carousel';
 import Text from '../component/common/Text';
-import {useConnectMap} from '@src/hooks/map';
 import {useSelector} from 'react-redux';
 import {LocationRedux} from '@src/redux/reducers';
 import R from 'ramda';
+import {useVehicle} from '@src/hooks/vehicle';
 
 const Map = () => {
   const status = [
@@ -23,27 +22,28 @@ const Map = () => {
   );
 
   const [bottomMapDialog, setBottomMapDialog] = useState(false);
-  // const { userMapName } = useUserProfile();
-
+  const {getVehicle} = useVehicle();
   const renderMap = useCallback(() => {
     const data = {
       location: {
-        lat: 21.035688,
-        lon: 105.851564,
+        lat: location?.f_latitude,
+        lon: location?.f_longitude,
       },
     };
     return <GGMap data={data}></GGMap>;
   }, []);
 
+  const MinDangerSpeed = getVehicle === 'car' ? 60 : 40;
+
   const mockData = [
     {
       title: 'Tốc độ',
-      value: ((location.f_heading ?? 0) * 3.6).toFixed(2),
+      value: (location.f_speed ?? 0).toFixed(2),
       type: 'km/h',
     },
     {
       title: 'Tình trạng',
-      value: status[location?.f_heading * 3.6 > 40 ? 1 : 0].label,
+      value: status[location?.f_speed > MinDangerSpeed ? 1 : 0].label,
       type: '',
       color: 'green',
     },
@@ -109,30 +109,43 @@ const Map = () => {
       <MainTitle marginH-24 title="Vị trí" />
       <ScrollView style={{flex: 1}}>
         {renderMap()}
-        {!bottomMapDialog && (
-          <View style={styles.position}>
-            <Carousel
-              disableIntervalMomentum
-              // ref={refCarousel}
-              data={mockData}
-              itemWidth={Metrics.screen.width - 60}
-              renderItem={renderItem}
-              sliderWidth={Metrics.screen.width}
-              slideStyle={{height: 200, justifyContent: 'flex-end'}}
-              getItemLayout={getItemLayout}
-              initialNumToRender={5}
-              windowSize={5} // lazyload only render prev and next item ( should equal to initialNumToRender )
-              containerCustomStyle={{flexGrow: 0}}
-              style={styles.position}
-            />
+        {getVehicle ? (
+          !bottomMapDialog ? (
+            <View style={styles.position}>
+              <Carousel
+                disableIntervalMomentum
+                // ref={refCarousel}
+                data={mockData}
+                itemWidth={Metrics.screen.width - 60}
+                renderItem={renderItem}
+                sliderWidth={Metrics.screen.width}
+                slideStyle={{height: 200, justifyContent: 'flex-end'}}
+                getItemLayout={getItemLayout}
+                initialNumToRender={5}
+                windowSize={5} // lazyload only render prev and next item ( should equal to initialNumToRender )
+                containerCustomStyle={{flexGrow: 0}}
+                style={styles.position}
+              />
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={onOpenBottomDetail}
+              style={[styles.position, {left: 16}]}>
+              <Image source={Images.logo.arrow_top} style={styles.image} />
+            </TouchableOpacity>
+          )
+        ) : (
+          <View
+            center
+            width={Metrics.screen.width}
+            flex
+            style={styles.position}>
+            <View flex style={styles.noJourney}>
+              <Text body_bold color={Colors.whiteSmoke}>
+                Bạn chưa chọn xe theo dõi. 🥰{' '}
+              </Text>
+            </View>
           </View>
-        )}
-        {bottomMapDialog && (
-          <TouchableOpacity
-            onPress={onOpenBottomDetail}
-            style={[styles.position, {left: 16}]}>
-            <Image source={Images.logo.arrow_top} style={styles.image} />
-          </TouchableOpacity>
         )}
       </ScrollView>
     </Container>
@@ -168,5 +181,12 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.white,
     borderBottomWidth: 1,
     paddingBottom: 10,
+  },
+  noJourney: {
+    height: 100,
+    backgroundColor: Colors.goldenBrown,
+    borderRadius: 16,
+    padding: 24,
+    marginHorizontal: 16,
   },
 });

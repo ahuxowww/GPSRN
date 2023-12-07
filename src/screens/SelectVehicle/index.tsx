@@ -5,7 +5,6 @@ import MainTitle from '../component/MainTitle';
 import Container from '../component/Container';
 import {Image, StyleSheet, ScrollView} from 'react-native';
 import Text from '../component/common/Text';
-import {useVehicle} from '@src/hooks/vehicle';
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useUserLogin} from '@src/hooks/user';
 import {firebase} from '@src/config/firebaseconfig';
@@ -15,7 +14,6 @@ import {actions} from '@src/redux/user/UserActions';
 
 const SelectVehicleScreen = () => {
   const {params}: any = useRoute();
-  const {onChangeVehicle} = useVehicle();
   const navigation = useNavigation();
   const isProfile = params?.isProfile;
   const {userData} = useUserLogin();
@@ -78,14 +76,13 @@ const SelectVehicleScreen = () => {
       )
       .then(data => {
         dispatch(actions.saveUserData({userData: data[0]}));
-        onChangeVehicle({vehicle: data[0]?.method});
       });
     if (isProfile) {
       navigation.navigate('MAIN_TAB', {screen: 'MyPageStack'});
     } else {
       navigation.dispatch(StackActions.replace('MAIN_TAB'));
     }
-  }, [dispatch, isProfile, navigation, onChangeVehicle, userData]);
+  }, [dispatch, isProfile, navigation, userData]);
   return (
     <Container
       safeBottom

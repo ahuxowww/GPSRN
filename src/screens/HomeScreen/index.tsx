@@ -5,9 +5,6 @@ import Container from '../component/Container';
 import {Colors, Svgs} from '../../assets';
 import {TabBar} from '../component/common/TabBar';
 import {TagItem} from './components/TagItem';
-import {TouchableOpacity, View} from 'react-native-ui-lib';
-import {useNavigation} from '@react-navigation/native';
-import {StyleSheet} from 'react-native';
 import {firebase} from '@src/config/firebaseconfig';
 import BottomSheetDetails from './components/BottomSheetDetails';
 
@@ -19,7 +16,6 @@ const tabList = [
 
 const HomeScreen = () => {
   const [tabIndex, setTabIndex] = useState(0);
-  const navigation = useNavigation();
   const [vehicleList, setVehicleList] = useState([]);
   React.useEffect(() => {
     firebase
@@ -43,10 +39,6 @@ const HomeScreen = () => {
   const onChangeType = useCallback((index: number) => {
     setTabIndex(index);
   }, []);
-
-  const onNavtoMapScreen = useCallback(() => {
-    navigation.navigate('LocationStack');
-  }, [navigation]);
 
   const onDeleteVehicle = useCallback(async (item: string) => {
     await firebase.firestore().collection('vehicle').doc(item).delete();
@@ -81,39 +73,37 @@ const HomeScreen = () => {
       />
       <ScrollView style={{flex: 1}}>
         {tabIndex === 0
-          ? vehicleList.map((item: any) => (
+          ? vehicleList.map((item: any, index: number) => (
               <TagItem
                 title={item.name}
                 type={item.method}
-                onPress={onNavtoMapScreen}
                 active={item.active}
                 onDelete={() => onDeleteVehicle(item.id)}
-                key={item.id}
+                key={index}
               />
             ))
           : tabIndex === 1
           ? vehicleList
               .filter(item => item.active)
-              .map((item: any) => (
+              .map((item: any, index: number) => (
                 <TagItem
                   title={item.name}
                   type={item.method}
                   active={item.active}
-                  onPress={onNavtoMapScreen}
                   onDelete={() => onDeleteVehicle(item.id)}
-                  key={item.id}
+                  key={index}
                 />
               ))
           : tabIndex === 2
           ? vehicleList
               .filter(item => !item.active)
-              .map((item: any) => (
+              .map((item: any, index: number) => (
                 <TagItem
                   title={item.name}
                   type={item.method}
                   active={item.active}
                   onDelete={onDeleteVehicle}
-                  key={item.id}
+                  key={index}
                 />
               ))
           : null}

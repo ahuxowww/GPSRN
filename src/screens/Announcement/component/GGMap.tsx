@@ -103,7 +103,7 @@ export const GGMap = (props: GGMapProps) => {
               lon: location?.f_longitude ?? 0,
             },
             type: 'car',
-            heading: 92 ?? 0,
+            heading: location?.f_heading ?? 0,
           }}
         />
       </MapView>
