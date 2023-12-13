@@ -156,7 +156,6 @@ const EventRegistration = () => {
     [currentItemIndex, journeys],
   );
 
-  console.log(journeys.length);
   return (
     <Container
       safeBottom

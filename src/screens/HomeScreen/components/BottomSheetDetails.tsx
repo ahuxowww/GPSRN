@@ -25,11 +25,14 @@ const BottomSheetDetails = props => {
     if (!newVehicle || !selectedId) {
       return;
     }
-    firebase.firestore().collection('vehicle').add({
-      method: selectedId,
-      active: false,
-      name: newVehicle,
-    });
+    firebase
+      .firestore()
+      .collection('vehicle')
+      .add({
+        method: selectedId,
+        active: idVehicle === '1' ? true : false,
+        name: newVehicle,
+      });
     firebase
       .firestore()
       .collection('vehicle')
@@ -48,7 +51,7 @@ const BottomSheetDetails = props => {
       });
     setNewVehicle('');
     setSelectedId('');
-  }, [newVehicle, props, selectedId]);
+  }, [idVehicle, newVehicle, props, selectedId]);
 
   return (
     <GestureHandlerRootView

@@ -8,11 +8,13 @@ const stateKey = 'vehicle';
 
 export interface VehicleState {
   vehicle: string;
+  active: boolean;
 }
 
 /* ------------- Initial State ------------- */
 const INITIAL_STATE: VehicleState = {
   vehicle: '',
+  active: false
 };
 
 /* ------------- Reducers ------------- */
@@ -25,9 +27,18 @@ const saveVehicle = (
   vehicle: vehicle,
 });
 
+const setStartJourney = (
+  state: VehicleState,
+  {payload: {active}}: ReturnType<typeof actions.setStartJourney>,
+) => ({
+  ...state,
+  active: active,
+});
+
 /* ------------- Hookup Reducers To Types ------------- */
 const reducer = createReducer(INITIAL_STATE, {
   [getType(actions.saveVehicle)]: saveVehicle,
+  [getType(actions.setStartJourney)]: setStartJourney,
 });
 
 const persistConfig = {
@@ -43,6 +54,7 @@ const reducerMap = {
 const getReducerState = (state: any): VehicleState => state[stateKey];
 const selectors = {
   getVehicle: ({vehicle}: VehicleState) => vehicle,
+  getActive: ({active}: VehicleState) => active,
 };
 
 /* ------------- Export ------------- */

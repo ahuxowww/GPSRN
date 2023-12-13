@@ -14,6 +14,7 @@ import {useVehicle} from '@src/hooks/vehicle';
 import {useSelector} from 'react-redux';
 import {LocationRedux} from '@src/redux/reducers';
 import R from 'ramda';
+import {useUserLogin} from '@src/hooks/user';
 interface GGMapProps {
   onPress?: (feature: any) => void;
   center?: {
@@ -35,9 +36,8 @@ interface Region {
 
 export const GGMap = (props: GGMapProps) => {
   const {onPress} = props;
-
+  const {followUser} = useUserLogin();
   const mapRef = useRef<any>(null);
-  const {getVehicle} = useVehicle();
   const mapOptions = {
     scrollEnabled: true,
   };
@@ -114,13 +114,17 @@ export const GGMap = (props: GGMapProps) => {
           center>
           <Svgs.FocusLocation width={32} height={32} />
         </TouchableOpacity>
-        <TouchableOpacity
-          marginT-24
-          style={styles.buttonIcon}
-          onPress={onGoToMaps}
-          center>
-          <Svgs.Directions width={32} height={32} />
-        </TouchableOpacity>
+        {followUser ? (
+          <TouchableOpacity
+            marginT-24
+            style={styles.buttonIcon}
+            onPress={onGoToMaps}
+            center>
+            <Svgs.Directions width={32} height={32} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );

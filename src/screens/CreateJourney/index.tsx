@@ -3,20 +3,21 @@ import Container from '../component/Container';
 import {Colors, Svgs} from '../../assets';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import Text from '../component/common/Text';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {StyleSheet} from 'react-native';
 import {getDisplayDuration} from '@src/ui/utilities/timeUtilities';
 import {differenceInSeconds, format} from 'date-fns';
 import {useRoute} from '@react-navigation/native';
 import {firebase} from '@src/config/firebaseconfig';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {LocationRedux} from '@src/redux/reducers';
 import R from 'ramda';
 import * as Geolib from 'geolib';
 import {DialogLib} from '../component/common/DialogLib';
 import {ButtonText} from '../component/common/ButtonText';
 import {useVehicle} from '@src/hooks/vehicle';
+import {actions} from '@src/redux/vehicle/VehicleActions';
+import {AppThunkDispatch} from '@src/redux/common';
 
 const CreateJourney = () => {
   const {params}: any = useRoute();
@@ -25,12 +26,14 @@ const CreateJourney = () => {
   const [duration, setDuration] = useState('00:00:00');
   const [routePoints, setRoutePoint] = useState([]);
   const navigation = useNavigation();
-  const {getVehicle} = useVehicle();
   const location = useSelector(
     R.pipe(LocationRedux.getReducerState, LocationRedux.selectors.getLocation),
   );
   const [lastLocation, setLastLocation] = useState(location);
   const [totalDistance, setTotalDistance] = useState(0);
+  const dispatch = useDispatch<AppThunkDispatch>();
+  const {getActiveJourney, getVehicle} = useVehicle();
+
   useEffect(() => {
     console.log('Start useEffect');
 
@@ -49,7 +52,6 @@ const CreateJourney = () => {
       clearInterval(timer);
     };
   }, [startTime]);
-  console.log(routePoints, lastLocation, routePoints.length);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -89,6 +91,8 @@ const CreateJourney = () => {
     if (!routePoints || !startTime) {
       return;
     }
+    dispatch(actions.setStartJourney({active: false}));
+
     firebase
       .firestore()
       .collection('journey')
@@ -117,7 +121,42 @@ const CreateJourney = () => {
       .then(data => {});
     setDuration('00:00:00');
     navigation.goBack();
-  }, [navigation, routePoints, startTime, totalDistance]);
+  }, [dispatch, getVehicle, navigation, routePoints, startTime, totalDistance]);
+
+  useEffect(() => {
+    if (getActiveJourney) {
+      // Biến để theo dõi số lần kiểm tra
+      let checkCount = 0;
+
+      // Hàm kiểm tra từ API Realtime
+      const checkSpeed = async () => {
+        try {
+          // Kiểm tra nếu vận tốc < 10, thì tăng biến đếm
+          if (location?.f_speed < 10) {
+            checkCount++;
+            console.log('Vận tốc thấp - Lần kiểm tra thứ', checkCount);
+          } else {
+            console.log('Vận tốc OK - Lần kiểm tra thứ', checkCount);
+          }
+
+          // Nếu đã kiểm tra 60 lần (5 giây * 12 lần), dừng kiểm tra
+          if (checkCount >= 3) {
+            onAddJourney();
+            console.log('Dừng hành trình vì vận tốc thấp liên tục.');
+            // Gọi hàm dừng hành trình ở đây (tuỳ thuộc vào cách bạn quản lý hành trình)
+          } else {
+            // Nếu chưa kiểm tra đủ số lần, thì tiếp tục kiểm tra sau 5 giây
+            setTimeout(checkSpeed, 5000);
+          }
+        } catch (error) {
+          console.error('Lỗi khi kiểm tra vận tốc:', error);
+        }
+      };
+
+      // Gọi hàm kiểm tra đầu tiên
+      checkSpeed();
+    }
+  }, [getActiveJourney, location?.f_speed, onAddJourney]); // Empty dependency array means this effect runs once when the component mounts
 
   const onCloseDialogAbortJourney = React.useCallback(() => {
     setVisible(false);
@@ -128,9 +167,10 @@ const CreateJourney = () => {
   }, []);
 
   const onDeleteJourney = React.useCallback(() => {
+    dispatch(actions.setStartJourney({active: false}));
     navigation.goBack();
     setDuration('00:00:00');
-  }, [navigation]);
+  }, [dispatch, navigation]);
 
   return (
     <Container
@@ -139,12 +179,17 @@ const CreateJourney = () => {
       barStyle="dark-content"
       backgroundBody={'#485583'}>
       <View center marginT-60>
-        <View center row paddingH-30 paddingB-15>
+        <TouchableOpacity
+          center
+          row
+          paddingH-30
+          paddingB-15
+          onPress={onOpenDialogAbortJourney}>
           <Svgs.Back fill={Colors.white} />
           <Text color={Colors.white} h_highlight>
             Back
           </Text>
-        </View>
+        </TouchableOpacity>
         <View center marginT-24>
           <Text marginT-8 color={Colors.white} h_highlight>
             Hành trình đang bắt đầu :))
@@ -153,7 +198,7 @@ const CreateJourney = () => {
             {`Thời gian: ${duration}`}
           </Text>
           <Text marginT-8 color={Colors.white} body_bold>
-            Quãng đường:
+            {` Quãng đường: ${totalDistance} m`}
           </Text>
         </View>
         <TouchableOpacity center marginT-24 onPress={onOpenDialogAbortJourney}>

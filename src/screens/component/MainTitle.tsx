@@ -2,8 +2,12 @@ import React, {useCallback, FC} from 'react';
 import {TouchableOpacity, View} from 'react-native-ui-lib';
 import {StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Colors, Images, Metrics, Svgs} from '../../assets';
+import {Colors, Metrics, Svgs} from '../../assets';
 import Text from './common/Text';
+import {actions} from '@src/redux/vehicle/VehicleActions';
+import {action} from 'typesafe-actions';
+import {useDispatch} from 'react-redux';
+import {AppThunkDispatch} from '@src/redux/common';
 interface Props {
   customStyle?: any;
   title?: string | null;
@@ -25,10 +29,12 @@ const MainTitle: FC<Props> = ({
 }) => {
   const customFontSize = fontSize ? {fontSize} : styles.title;
   const navigation = useNavigation();
+  const dispatch = useDispatch<AppThunkDispatch>();
 
   const onStartJourney = useCallback(() => {
+    dispatch(actions.setStartJourney({active: true}));
     navigation.navigate('CREATE_JOURNEY', {startTime: new Date()});
-  }, [navigation]);
+  }, [dispatch, navigation]);
 
   const onGoback = useCallback(() => {
     navigation.goBack();

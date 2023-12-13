@@ -17,7 +17,7 @@ import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
 import {useSettings} from '@src/hooks/settings';
 import {useUserLogin} from '@src/hooks/user';
 import {DialogLib} from '../component/common/DialogLib';
-import {FIREBASE_AUTH} from '@src/config/firebaseconfig';
+import {FIREBASE_APP} from '@src/config/firebaseconfig';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -27,6 +27,7 @@ import {Image} from 'react-native';
 import Text from '../component/common/Text';
 import {useNavigation} from '@react-navigation/native';
 import MainTitle from '../component/MainTitle';
+import {getAuth} from 'firebase/auth';
 
 const loginSchema = Yup.object().shape({
   user: Yup.string()
@@ -43,14 +44,13 @@ const loginSchema = Yup.object().shape({
 const Login = () => {
   const {rememberedUser, isRememberPW, onSetRememberPW, onSetcurrentUserInfo} =
     useSettings();
-  const {currentUser} = useUserLogin();
   const dispatch = useDispatch<AppThunkDispatch>();
   const [showPassword, setShowPassword] = useState(true);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [agreement, setAgreement] = useState<boolean>(isRememberPW);
   const scrollViewRef = useRef<any>();
   const navigation = useNavigation();
-  const auth = FIREBASE_AUTH;
+  const auth = getAuth(FIREBASE_APP);
   const {
     control,
     formState: {errors},

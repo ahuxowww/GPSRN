@@ -14,6 +14,7 @@ interface ModalProps {
   imageBackground?: any;
   children?: React.ReactNode;
   isDelete?: boolean;
+  isDangerous?: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
 }
@@ -24,6 +25,7 @@ export const DialogLib: FC<ModalProps> = ({
   description,
   imageBackground,
   isDelete,
+  isDangerous,
   onClose,
   onConfirm,
   children,
@@ -65,27 +67,35 @@ export const DialogLib: FC<ModalProps> = ({
       width={'100%'}
       containerStyle={styles.dialogContainer}
       onDismiss={onClose}>
-      <TouchableOpacity flex marginH-32 center onPressOut={onClose}>
-        <View bg-white spread style={styles.dialogBackground}>
-          {imageBackground && (
-            <Image source={imageBackground} style={styles.bgImage} />
-          )}
-          {title && (
-            <>
-              <View marginV-16 marginH-24>
-                <Text h_page_title>{title}</Text>
-              </View>
-              <View height={2} bg-grey70 />
-            </>
-          )}
-          {description && (
-            <Text body_regular marginV-16 marginH-24>
-              {description}
-            </Text>
-          )}
-          {children ? children : renderButton()}
-        </View>
-      </TouchableOpacity>
+      {isDangerous ? (
+        <TouchableOpacity
+          flex
+          marginH-32
+          center
+          onPressOut={onClose}></TouchableOpacity>
+      ) : (
+        <TouchableOpacity flex marginH-32 center onPressOut={onClose}>
+          <View bg-white spread style={styles.dialogBackground}>
+            {imageBackground && (
+              <Image source={imageBackground} style={styles.bgImage} />
+            )}
+            {title && (
+              <>
+                <View marginV-16 marginH-24>
+                  <Text h_page_title>{title}</Text>
+                </View>
+                <View height={2} bg-grey70 />
+              </>
+            )}
+            {description && (
+              <Text body_regular marginV-16 marginH-24>
+                {description}
+              </Text>
+            )}
+            {children ? children : renderButton()}
+          </View>
+        </TouchableOpacity>
+      )}
     </Dialog>
   );
 };

@@ -7,6 +7,7 @@ import {TabBar} from '../component/common/TabBar';
 import {TagItem} from './components/TagItem';
 import {firebase} from '@src/config/firebaseconfig';
 import BottomSheetDetails from './components/BottomSheetDetails';
+import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
 
 const tabList = [
   {label: 'Tất cả', status: 0},

@@ -7,6 +7,11 @@ const saveVehicle = createAction(typePrefixFormat('saveVehicle'))<{
   vehicle: any;
 }>();
 
+const setStartJourney = createAction(typePrefixFormat('setStartJourney'))<{
+  active: boolean;
+}>();
+
 export const actions = {
   saveVehicle,
+  setStartJourney
 };

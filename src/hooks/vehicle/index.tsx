@@ -12,6 +12,10 @@ export const useVehicle = () => {
     R.pipe(VehicleRedux.getReducerState, VehicleRedux.selectors.getVehicle),
   );
 
+  const getActiveJourney = useSelector(
+    R.pipe(VehicleRedux.getReducerState, VehicleRedux.selectors.getActive),
+  );
+
   const onChangeVehicle = React.useCallback(
     (payload: {vehicle: string}) => {
       dispatch(actions.saveVehicle(payload));
@@ -21,6 +25,7 @@ export const useVehicle = () => {
 
   return {
     getVehicle,
+    getActiveJourney,
     onChangeVehicle,
   };
 };

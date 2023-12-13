@@ -1,27 +1,21 @@
 import {Colors, Images, Metrics, Svgs} from '@src/assets';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {LayoutChangeEvent, StyleSheet, ScrollView} from 'react-native';
-import {TouchableOpacity, View} from 'react-native-ui-lib';
+import React, {useCallback, useRef, useState} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import {View} from 'react-native-ui-lib';
 import * as Yup from 'yup';
 import {useDispatch} from 'react-redux';
 
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Controller, useForm} from 'react-hook-form';
-import {UserThunk} from '@src/redux/thunks';
 import {AppThunkDispatch} from '@src/redux/common';
 import Container from '../component/Container';
-import {CheckBox} from '../component/common/CheckBox';
 import {Button} from '../component/common/Button';
 import {TextInput} from '../component/common/TextInput';
 import {KeyboardAvoidingView} from '../component/common/KeyboardAvoidingView';
-import {useSettings} from '@src/hooks/settings';
-import {useUserLogin} from '@src/hooks/user';
-import {DialogLib} from '../component/common/DialogLib';
-import {FIREBASE_AUTH} from '@src/config/firebaseconfig';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {FIREBASE_APP} from '@src/config/firebaseconfig';
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
 import {actions} from '@src/redux/user/UserActions';
 import {Image} from 'react-native';
-import Text from '../component/common/Text';
 import MainTitle from '../component/MainTitle';
 import {useNavigation} from '@react-navigation/native';
 import {firebase} from '@src/config/firebaseconfig';
@@ -44,7 +38,8 @@ const SignIn = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppThunkDispatch>();
 
-  const auth = FIREBASE_AUTH;
+  const auth = getAuth(FIREBASE_APP);
+
   const {
     control,
     formState: {errors},

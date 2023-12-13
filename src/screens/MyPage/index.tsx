@@ -34,7 +34,6 @@ const MyPageScreen = () => {
   const onLogOut = useCallback(async () => {
     dispatch(UserThunk.Logout());
   }, [dispatch]);
-
   return (
     <Container
       safeBottom
@@ -53,9 +52,14 @@ const MyPageScreen = () => {
             paddingV-12>
             <View row centerV>
               <Image source={{uri: userData?.uri}} style={styles.avatar} />
-              <Text marginL-24 h_page_title>
-                {userData?.username}
-              </Text>
+              <View>
+                <Text marginL-24 h_page_title>
+                  {userData?.username}
+                </Text>
+                <Text marginL-24 h_page_title>
+                  {userData?.phone}
+                </Text>
+              </View>
             </View>
             <TouchableOpacity onPress={onNavToProfile}>
               <Svgs.ArrowRight width={24} height={24} />

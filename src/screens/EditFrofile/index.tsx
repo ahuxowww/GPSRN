@@ -19,14 +19,13 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 const EditProfile = () => {
   const {params}: any = useRoute();
   const navigation = useNavigation();
-  const isProfile = params.isProfile;
+  const isProfile = params?.isProfile;
   const dispatch = useDispatch<AppThunkDispatch>();
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [phone, setPhone] = useState('');
   const scrollViewRef = useRef<any>();
   const {userData} = useUserLogin();
-  console.log(isProfile, params);
   const editProfile = useCallback(async () => {
     await firebase.firestore().collection('user').doc(userData.id).update({
       username: name,

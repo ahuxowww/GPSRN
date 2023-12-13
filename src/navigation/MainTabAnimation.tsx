@@ -6,10 +6,22 @@ import HomeScreen from '../screens/HomeScreen';
 import {Colors} from '../assets';
 import AnimatedTabIcon from '../screens/component/AnimatedTabIcon';
 import AnnouncementScreen from '../screens/Announcement';
+import {useEffect} from 'react';
+import {useVehicle} from '@src/hooks/vehicle';
+import {useNavigation} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 const MainTabAnimation = () => {
+  const {getActiveJourney} = useVehicle();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (getActiveJourney) {
+      navigation.navigate('CREATE_JOURNEY', {startTime: new Date()});
+    }
+  }, [getActiveJourney, navigation]);
+  
   return (
     <Tab.Navigator
       screenOptions={{
@@ -56,7 +68,6 @@ const MainTabAnimation = () => {
               active={props.accessibilityState?.selected}
             />
           ),
-
         }}
       />
       <Tab.Screen
