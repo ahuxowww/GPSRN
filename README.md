@@ -2,7 +2,7 @@ For only Android:
 step 1: yarn  
 step 2: yarn android  
  
-USEAGE:  
+USAGE:  
 The App is used to monitor vehicle alerts about location information   
 to trackers using a different sensor system including sending data,   
 notifying danger of exceeding the allowed speed, selecting for   
